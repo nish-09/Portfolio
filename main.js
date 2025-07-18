@@ -560,3 +560,21 @@ style.textContent = `
   }
 `;
 document.head.appendChild(style);
+
+
+const emojis = ["💻", "🚀", "⚡", "🎨"];
+const container = document.querySelector(".floating-elements");
+
+emojis.forEach((emoji, index) => {
+    const el = document.createElement("div");
+    el.className = "floating-element";
+    el.textContent = emoji;
+
+    el.style.setProperty("--delay", `${index}s`);
+    el.style.setProperty("--duration", `${6 + Math.random() * 2}s`);
+    el.style.left = `${20 + index * 20}vw`;
+    el.style.fontSize = `${1.8 + Math.random() * 0.4}rem`;
+
+    container.appendChild(el);
+});
+
