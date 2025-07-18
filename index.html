@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portfolio - Nishit Parikh</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="particles-js"></div>
+    <div class="cursor-dot" data-cursor-dot></div>
+    <div class="cursor-outline" data-cursor-outline></div>
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="nav-logo">
+          <a href="#home">Portfolio</a>
+        </div>
+        <div class="nav-menu">
+          <a href="#home" class="nav-link">Home</a>
+          <a href="#about" class="nav-link">About</a>
+          <a href="#skills" class="nav-link">Skills</a>
+          <a href="#projects" class="nav-link">Projects</a>
+          <a href="#contact" class="nav-link">Contact</a>
+          <button class="theme-toggle" id="themeToggle">
+            <span class="theme-icon">🌙</span>
+          </button>
+        </div>
+        <div class="hamburger" id="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </nav>
+    <section id="home" class="hero">
+      <div class="hero-container">
+        <div class="hero-content">
+          <h1 class="hero-title">
+            <span class="glitch-text" data-text="Hi, I'm Alex Johnson">Hi, I'm <span class="highlight">Nishit Parikh</span></span>
+          </h1>
+          <p class="hero-subtitle">
+            <span class="typing-text" data-words="Aspiring Full Stack Developer,UI/UX Designer,Problem Solver,Code Wizard"></span>
+          </p>
+          <p class="hero-description">
+            <span class="fade-in-text">I create beautiful, responsive websites and web applications using modern technologies. Passionate about clean code, user experience, and bringing ideas to life.</span>
+          </p>
+          <div class="hero-buttons">
+            <a href="#projects" class="btn btn-primary btn-glow">
+              <span>View My Work</span>
+              <div class="btn-particles"></div>
+            </a>
+            <a href="#contact" class="btn btn-secondary btn-magnetic">
+              <span>Get In Touch</span>
+            </a>
+          </div>
+          <div class="floating-elements">
+            <div class="floating-element" style="--delay: 0s; --duration: 6s;">💻</div>
+            <div class="floating-element" style="--delay: 2s; --duration: 8s;">🚀</div>
+            <div class="floating-element" style="--delay: 4s; --duration: 7s;">⚡</div>
+            <div class="floating-element" style="--delay: 1s; --duration: 9s;">🎨</div>
+          </div>
+        </div>
+        <div class="hero-image">
+          <div class="hero-avatar tilt-card">
+            <img src="assets/images/profile.jpg" alt="Profile Picture" />
+            <div class="avatar-glow"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="about" class="about">
+      <div class="container">
+        <h2 class="section-title">About Me</h2>
+        <div class="about-content">
+          <div class="about-text">
+            <p>
+              <span class="reveal-text">I'm a passionate web developer with over 1 year of experience in creating digital solutions that make a difference. I specialize in modern JavaScript frameworks, responsive design, and user-centered development.</span>
+            </p>
+            <p>
+              <span class="reveal-text">When I'm not coding, you can find me exploring new technologies, contributing to open source projects, or enjoying outdoor activities. I believe in continuous learning and staying up-to-date with the latest industry trends.</span>
+            </p>
+            <div class="about-stats">
+              <div class="stat counter-card">
+                <h3 class="counter" data-target="7">0</h3>
+                <p>Projects Completed</p>
+              </div>
+              <div class="stat counter-card">
+                <h3 class="counter" data-target="1">0</h3>
+                <p>Year Experience</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="skills" class="skills">
+      <div class="container">
+        <h2 class="section-title">Skills & Technologies</h2>
+        <div class="skills-grid">
+          <div class="skill-category skill-card">
+            <h3>Frontend</h3>
+            <div class="skill-list">
+              <span class="skill-tag skill-bounce">HTML5</span>
+              <span class="skill-tag skill-bounce">CSS3</span>
+              <span class="skill-tag skill-bounce">JavaScript</span>
+              <span class="skill-tag skill-bounce">React</span>
+            </div>
+          </div>
+          <div class="skill-category skill-card">
+            <h3>Backend</h3>
+            <div class="skill-list">
+                <span class="skill-tag skill-bounce">C</span>
+                <span class="skill-tag skill-bounce">Java</span>
+                <span class="skill-tag skill-bounce">Python</span>
+            </div>
+          </div>
+          <div class="skill-category skill-card">
+            <h3>Tools & Others</h3>
+            <div class="skill-list">
+              <span class="skill-tag skill-bounce">Git</span>
+              <span class="skill-tag skill-bounce">Figma</span>
+              <span class="skill-tag skill-bounce">VS Code</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="projects" class="projects">
+      <div class="container">
+        <h2 class="section-title">Featured Projects</h2>
+        <div class="projects-grid">
+          <div class="project-card project-hover">
+            <div class="project-image">
+              <img src="assets/images/passcraft.png" alt="Passcraft" />
+              <div class="project-overlay">
+                <div class="project-links">
+                  <a href="https://passcraft.vercel.app/" class="project-link">Live Demo</a>
+                  <a href="https://github.com/nish-09/PassCraft" class="project-link">Source Code</a>
+                </div>
+              </div>
+            </div>
+            <div class="project-content">
+              <h3>PassCraft</h3>
+              <p>PassCraft is a 100% free, browser-based password generator that lets you create strong, unique passwords in seconds. No signup or storage required — all data stays on your device. Customize length, include symbols or numbers, and get instant strength feedback. Mobile-friendly and privacy-first, PassCraft makes securing your accounts effortless.</p>
+              <div class="project-tech">
+                <span class="tech-tag">HTML5</span>
+                <span class="tech-tag">CSS3</span>
+                <span class="tech-tag">JavaScript</span>
+              </div>
+            </div>
+          </div>
+          <div class="project-card project-hover">
+            <div class="project-image">
+              <img src="assets/images/tapntotal.png" alt="Tap n' Total" />
+              <div class="project-overlay">
+                <div class="project-links">
+                  <a href="https://tap-n-total.vercel.app/" class="project-link">Live Demo</a>
+                  <a href="https://github.com/nish-09/Tap-n-Total" class="project-link">Source Code</a>
+                </div>
+              </div>
+            </div>
+            <div class="project-content">
+              <h3>Tap n' Total</h3>
+              <p>Tap n' Total is your go-to web calculator for fast, versatile number crunching. From basic arithmetic to unit conversions (length, volume, speed, time, temperature, weight) and handy tools like percentage and BMI calculators, it's designed to tackle everyday math effortlessly—all in one clean interface. No clutter, no setup—just tap and total.</p>
+              <div class="project-tech">
+                <span class="tech-tag">HTML5</span>
+                <span class="tech-tag">CSS3</span>
+                <span class="tech-tag">JavaScript</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="project-card project-hover">
+            <div class="project-image">
+              <img src="assets/images/netflix.jpeg" alt="Netflix Clone" />
+              <div class="project-overlay">
+                <div class="project-links">
+                  <a href="https://github.com/nish-09/Netflix-Clone" class="project-link">Source Code</a>
+                </div>
+              </div>
+            </div>
+            <div class="project-content">
+              <h3>Netflix Clone</h3>
+              <p>A responsive front-end clone of Netflix, built purely with HTML and CSS. This project replicates the sleek UI of the popular streaming platform, featuring a modern landing page, navbar, banners, and neatly styled content sections — all without a single line of JavaScript. Great for practicing layout, responsiveness, and design fidelity.</p>
+              <div class="project-tech">
+                <span class="tech-tag">HTML5</span>
+                <span class="tech-tag">CSS3</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="contact" class="contact">
+      <div class="container">
+        <h2 class="section-title">Get In Touch</h2>
+        <div class="contact-content">
+          <div class="contact-info">
+            <h3>Let's work together</h3>
+            <p>
+              I'm always open to discussing new opportunities, interesting projects,
+              or just having a chat about web development. Feel free to reach out!
+            </p>
+            <div class="contact-details">
+              <div class="contact-item">
+                <span class="contact-icon">📧</span>
+                <span>nishit.parikh9@gmail.com</span>
+              </div>
+              <div class="contact-item">
+                <span class="contact-icon">📱</span>
+                <span>+91 730*****06</span>
+              </div>
+              <div class="contact-item">
+                <span class="contact-icon">📍</span>
+                <span>Mumbai, Maharashtra</span>
+              </div>
+            </div>
+            <div class="social-links">
+              <a href="www.linkedin.com/in/nishit-parikh-390785329" class="social-link">LinkedIn</a>
+              <a href="https://github.com/nish-09" class="social-link">GitHub</a>
+              <a href="instagram.com/nishitparikh_" class="social-link">Instagram</a>
+            </div>
+          </div>
+          <form class="contact-form form-glow" id="contactForm">
+            <div class="form-group">
+              <input type="text" id="name" name="name" placeholder="Your Name" class="input-glow" required />
+            </div>
+            <div class="form-group">
+              <input type="email" id="email" name="email" placeholder="Your Email" class="input-glow" required />
+            </div>
+            <div class="form-group">
+              <input type="text" id="subject" name="subject" placeholder="Subject" class="input-glow" required />
+            </div>
+            <div class="form-group">
+              <textarea id="message" name="message" rows="5" placeholder="Your Message" class="input-glow" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-glow">
+              <span>Send Message</span>
+              <div class="btn-particles"></div>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+    <footer class="footer">
+      <div class="container">
+        <p>&copy; 2025 Nishit Parikh. All rights reserved.</p>
+      </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
