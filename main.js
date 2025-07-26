@@ -603,7 +603,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
   scrollBtn.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Custom scroll-to-top with reduced speed (300ms)
+    const start = window.scrollY;
+    const duration = 900;
+    const startTime = performance.now();
+    function easeOutCubic(t) {
+      return 1 - Math.pow(1 - t, 3);
+    }
+    function animateScroll(currentTime) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = easeOutCubic(progress);
+      window.scrollTo(0, start * (1 - eased));
+      if (progress < 1) {
+        requestAnimationFrame(animateScroll);
+      }
+    }
+    requestAnimationFrame(animateScroll);
   });
 });
 
