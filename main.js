@@ -591,3 +591,29 @@ emojis.forEach((emoji, index) => {
     container.appendChild(el);
 });
 
+// Scroll To Top Button Functionality
+document.addEventListener('DOMContentLoaded', () => {
+  const scrollBtn = document.getElementById('scrollToTopBtn');
+  if (!scrollBtn) return;
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 200) {
+      scrollBtn.classList.add('show');
+    } else {
+      scrollBtn.classList.remove('show');
+    }
+  });
+  scrollBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+});
+
+// Navbar Progress Bar Scroll Logic
+window.addEventListener('scroll', () => {
+  const progressBar = document.getElementById('navbarProgressBar');
+  if (!progressBar) return;
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const scrolled = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  progressBar.style.width = scrolled + '%';
+});
+

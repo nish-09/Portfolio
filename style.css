@@ -51,6 +51,7 @@ body {
     background-color: var(--background-color);
     transition: background-color 0.3s ease, color 0.3s ease;
     overflow-x: hidden;
+    cursor: none;
 }
 
 html {
@@ -1407,4 +1408,61 @@ section {
   align-items: center;
   width: 100%;
   justify-content: center;
+}
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 10px;
+  background: var(--surface-color);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 8px;
+  border: 2px solid var(--surface-color);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-color);
+}
+::-webkit-scrollbar-track {
+  background: var(--surface-color);
+  border-radius: 8px;
+}
+
+/* Scroll To Top Button Styles */
+#scrollToTopBtn {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 48px;
+  height: 48px;
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 4px 16px rgba(99,102,241,0.2);
+  font-size: 2rem;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s, background 0.3s;
+  z-index: 10000;
+}
+#scrollToTopBtn:hover {
+  background: var(--secondary-color);
+}
+#scrollToTopBtn.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Navbar Progress Bar */
+#navbarProgressBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 4px;
+  background: var(--primary-color);
+  z-index: 9999;
+  transition: width 0.2s linear;
 }
