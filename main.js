@@ -110,7 +110,6 @@ class ScrollManager {
         });
     }
 }
-
 class CursorManager {
     constructor() {
         this.cursorDot = document.querySelector('.cursor-dot');
@@ -189,6 +188,7 @@ class TypingAnimation {
 class CounterAnimation {
     constructor() {
         this.counters = document.querySelectorAll('.counter');
+        this.interval = null;
         this.init();
     }
 
@@ -196,12 +196,11 @@ class CounterAnimation {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    this.animateCounter(entry.target);
+                    this.startLoop(entry.target);
                     observer.unobserve(entry.target);
                 }
             });
         });
-
         this.counters.forEach(counter => observer.observe(counter));
     }
 
@@ -210,17 +209,31 @@ class CounterAnimation {
         const increment = target / 100;
         let current = 0;
 
-        const updateCounter = () => {
-            if (current < target) {
-                current += increment;
-                counter.textContent = Math.ceil(current);
-                requestAnimationFrame(updateCounter);
-            } else {
-                counter.textContent = target;
+        return new Promise(resolve => {
+            const updateCounter = () => {
+                if (current < target) {
+                    current += increment;
+                    counter.textContent = Math.ceil(current);
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    counter.textContent = target;
+                    resolve();
+                }
+            };
+            updateCounter();
+        });
+    }
+
+    startLoop(counter) {
+        const target = parseInt(counter.getAttribute('data-target'));
+        const loop = async () => {
+            while (true) {
+                counter.textContent = '0';
+                await this.animateCounter(counter);
+                await new Promise(res => setTimeout(res, 10000));
             }
         };
-
-        updateCounter();
+        loop();
     }
 }
 
