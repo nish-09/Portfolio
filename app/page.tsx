@@ -14,13 +14,13 @@ export default function Home() {
         <Galaxy
           mouseRepulsion={true}
           mouseInteraction={true}
-          density={1.5}
-          glowIntensity={0.6}
-          saturation={0.5}
-          hueShift={240}
-          rotationSpeed={0.03}
-          repulsionStrength={3.0}
-          starSpeed={0.2}
+          density={1}
+          glowIntensity={0.8}
+          saturation={1}
+          hueShift={130}
+          rotationSpeed={0.05}
+          repulsionStrength={0.5}
+          starSpeed={0.3}
           speed={0.2}
           transparent={true}
         />
@@ -48,7 +48,7 @@ export default function Home() {
               Hover or drag to interact with my technology stack
             </p>
           </div>
-          
+
           <div className="w-full min-w-0 max-w-[100vw] h-[min(48dvh,480px)] min-h-[240px] sm:min-h-[320px] sm:h-[min(52dvh,520px)] md:h-[70vh] md:min-h-[520px] relative z-10 pb-[max(0.5rem,env(safe-area-inset-bottom,0px))]">
             <Ballpit
               count={15}
