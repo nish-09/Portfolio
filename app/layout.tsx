@@ -3,7 +3,6 @@ import { Bruno_Ace_SC, Frijole, Rubik_Dirt } from "next/font/google";
 import "./globals.css";
 import ClickSpark from "./components/ClickSpark";
 import CustomCursor from "./components/CustomCursor";
-import AstraAssistant from "./components/AstraAssistant";
 import SitePreloader from "./components/SitePreloader";
 import PortfolioBubbleMenu from "./components/PortfolioBubbleMenu";
 import SmoothScroll from "./components/SmoothScroll";
@@ -51,7 +50,6 @@ export default function RootLayout({
       <body className="min-h-full min-h-[100dvh] w-full min-w-0 flex flex-col font-sans selection:bg-white/30 selection:text-white overflow-x-clip">
         <SmoothScroll>
           <CustomCursor />
-          <AstraAssistant />
           <ClickSpark
             sparkColor="#ffffff"
             sparkSize={32}

@@ -4,14 +4,26 @@ import Projects from "./components/Projects";
 import Ballpit from "./components/Ballpit";
 import ConnectSection from "./components/ConnectSection";
 import AboutMe from "./components/AboutMe";
-import BackgroundParticles from "./components/BackgroundParticles";
+import Galaxy from "./components/Galaxy";
 import { StoryBlock, StorySection } from "./components/StorySection";
 
 export default function Home() {
   return (
     <main id="home" className="min-h-screen min-h-[100dvh] w-full min-w-0 bg-[#101010] text-[#fcfcfc] relative overflow-x-clip">
-      <div className="fixed inset-0 z-0 pointer-events-none opacity-50">
-        <BackgroundParticles />
+      <div className="fixed inset-0 z-0 pointer-events-none opacity-80">
+        <Galaxy
+          mouseRepulsion={true}
+          mouseInteraction={true}
+          density={1.5}
+          glowIntensity={0.6}
+          saturation={0.5}
+          hueShift={240}
+          rotationSpeed={0.03}
+          repulsionStrength={3.0}
+          starSpeed={0.2}
+          speed={0.2}
+          transparent={true}
+        />
       </div>
 
       <div className="relative z-10 w-full min-w-0">
