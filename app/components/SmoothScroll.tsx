@@ -52,8 +52,8 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
       duration: 1.35,
       easing: easeOutQuart,
       smoothWheel: true,
-      wheelMultiplier: 0.78,
-      touchMultiplier: 1.2,
+      wheelMultiplier: 1.25,
+      touchMultiplier: 1.3,
       syncTouch: true,
       syncTouchLerp: 0.11,
     });

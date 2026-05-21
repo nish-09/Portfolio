@@ -4,9 +4,9 @@ import { useScroll, useTransform, motion, useSpring } from "framer-motion";
 import { useRef } from "react";
 
 const heroScrollSpring = {
-  stiffness: 48,
-  damping: 46,
-  mass: 0.65,
+  stiffness: 90,
+  damping: 35,
+  mass: 0.45,
 } as const;
 
 export default function Overlay() {
@@ -22,11 +22,11 @@ export default function Overlay() {
   const opacity1 = useTransform(smoothHeroScroll, [0, 0.15, 0.25, 1], [1, 1, 0, 0]);
   const y1 = useTransform(smoothHeroScroll, [0, 0.25, 1], [0, -100, -100]);
 
-  const opacity2 = useTransform(smoothHeroScroll, [0, 0.35, 0.45, 0.6, 0.7, 1], [0, 0, 1, 1, 0, 0]);
-  const y2 = useTransform(smoothHeroScroll, [0, 0.35, 0.7, 1], [100, 100, -100, -100]);
+  const opacity2 = useTransform(smoothHeroScroll, [0, 0.28, 0.33, 0.55, 0.90, 1], [0, 0, 1, 1, 0, 0]);
+  const y2 = useTransform(smoothHeroScroll, [0, 0.28, 0.33, 0.55, 0.90, 1], [80, 80, 0, -20, -100, -100]);
 
   return (
-    <div ref={containerRef} className="absolute top-0 left-0 w-full max-w-[100vw] min-w-0 h-[400vh] pointer-events-none z-10 overflow-x-clip">
+    <div ref={containerRef} className="absolute top-0 left-0 w-full max-w-[100vw] min-w-0 h-[250vh] pointer-events-none z-10 overflow-x-clip">
       <div className="sticky top-0 h-[100dvh] min-h-[100svh] max-h-[100dvh] w-full max-w-[100vw] min-w-0 flex items-center overflow-hidden box-border pl-[max(0.75rem,env(safe-area-inset-left,0px))] pr-[max(0.75rem,env(safe-area-inset-right,0px))]">
 
         <motion.div

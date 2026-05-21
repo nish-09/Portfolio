@@ -3,14 +3,37 @@
 import Lanyard from './Lanyard';
 import './AboutMe.css';
 import { StorySection } from './StorySection';
+import { useRef } from 'react';
+import { useScroll, useTransform, motion, useSpring } from 'framer-motion';
 
 export default function AboutMe() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
+
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 90,
+    damping: 30,
+    mass: 0.4
+  });
+
+  // Buttery-smooth scroll-linked entry, float, and exit
+  const opacity = useTransform(smoothProgress, [0.05, 0.28, 0.8, 0.95], [0, 1, 1, 0]);
+  const y = useTransform(smoothProgress, [0.05, 0.28, 0.8, 0.95], [60, 0, 0, -60]);
+  const scale = useTransform(smoothProgress, [0.05, 0.28, 0.8, 0.95], [0.96, 1, 1, 0.96]);
+
   return (
-    <StorySection
-      id="about"
-      className="relative w-full min-w-0 max-w-[100vw] py-12 sm:py-16 md:py-20 pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] sm:px-6 md:px-12 lg:px-24 overflow-hidden bg-transparent"
-    >
-      <div className="max-w-7xl w-full min-w-0 mx-auto flex flex-col md:flex-row items-center gap-8 sm:gap-10 md:gap-12 min-h-0 md:min-h-[600px]">
+    <div ref={containerRef} className="w-full relative">
+      <StorySection
+        id="about"
+        className="relative w-full min-w-0 max-w-[100vw] py-12 sm:py-16 md:py-20 pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] sm:px-6 md:px-12 lg:px-24 overflow-hidden bg-transparent"
+      >
+        <motion.div 
+          style={{ opacity, y, scale }}
+          className="max-w-7xl w-full min-w-0 mx-auto flex flex-col md:flex-row items-center gap-8 sm:gap-10 md:gap-12 min-h-0 md:min-h-[600px]"
+        >
 
         <div className="w-full min-w-0 md:w-1/2 z-10 order-2 md:order-none">
           <h2 className="text-4xl sm:text-5xl md:text-7xl xl:text-8xl font-bold text-white mb-4 sm:mb-6 tracking-tight text-center md:text-left">
@@ -49,7 +72,8 @@ Less talk, more build.
           </div>
         </div>
 
-      </div>
-    </StorySection>
+        </motion.div>
+      </StorySection>
+    </div>
   );
 }

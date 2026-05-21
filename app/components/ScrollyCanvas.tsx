@@ -21,12 +21,12 @@ export default function ScrollyCanvas() {
     offset: ["start start", "end end"]
   });
 
-  const boostedProgress = useTransform(scrollYProgress, (v) => Math.min(v * 1.75, 1));
+  const boostedProgress = useTransform(scrollYProgress, (v) => Math.min(v * 1.45, 1));
 
   const smoothProgress = useSpring(boostedProgress, {
-    stiffness: 48,
-    damping: 46,
-    mass: 0.65,
+    stiffness: 90,
+    damping: 35,
+    mass: 0.45,
   });
 
   const frameIndex = useTransform(
@@ -123,7 +123,7 @@ export default function ScrollyCanvas() {
   });
 
   return (
-    <div ref={containerRef} className="h-[400vh] w-full min-w-0 max-w-[100vw] relative bg-[#101010] overflow-x-clip">
+    <div ref={containerRef} className="h-[250vh] w-full min-w-0 max-w-[100vw] relative bg-[#101010] overflow-x-clip">
       <div className="sticky top-0 h-[100dvh] min-h-[100svh] max-h-[100dvh] w-full min-w-0 max-w-[100vw] overflow-hidden">
         <canvas ref={canvasRef} className="w-full h-full max-w-full block touch-pan-y" />
       </div>
