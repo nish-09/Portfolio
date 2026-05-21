@@ -5,6 +5,7 @@ import Ballpit from "./components/Ballpit";
 import ConnectSection from "./components/ConnectSection";
 import AboutMe from "./components/AboutMe";
 import Galaxy from "./components/Galaxy";
+import GitHubStats from "./components/GitHubStats";
 import { StoryBlock, StorySection } from "./components/StorySection";
 
 export default function Home() {
@@ -65,6 +66,8 @@ export default function Home() {
             />
           </div>
         </StorySection>
+
+        <GitHubStats />
 
         <ConnectSection />
       </div>
