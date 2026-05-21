@@ -37,7 +37,7 @@ export default function Overlay() {
             Nishit Parikh
           </h1>
           <p className="text-sm sm:text-lg md:text-2xl lg:text-3xl text-gray-300 mt-2 sm:mt-3 md:mt-4 tracking-wide font-light drop-shadow-md max-w-[min(100%,34ch)] sm:max-w-[40ch] md:max-w-none px-2">
-            AI & Data Science | Web Developer
+            | Full Stack Developer |
           </p>
         </motion.div>
 
