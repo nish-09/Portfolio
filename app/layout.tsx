@@ -35,7 +35,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#101010",
+  themeColor: "#000000",
 };
 
 export default function RootLayout({
@@ -46,7 +46,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${brunoAce.variable} ${frijole.variable} ${rubikDirt.variable} bg-[#101010] text-[#fcfcfc] antialiased overflow-x-clip`}
+      className={`${brunoAce.variable} ${frijole.variable} ${rubikDirt.variable} bg-black text-[#fcfcfc] antialiased overflow-x-clip`}
     >
       <body className="min-h-full min-h-[100dvh] w-full min-w-0 flex flex-col font-sans selection:bg-white/30 selection:text-white overflow-x-clip">
         <SmoothScroll>

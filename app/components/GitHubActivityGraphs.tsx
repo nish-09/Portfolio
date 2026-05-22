@@ -607,7 +607,7 @@ export default function GitHubActivityGraphs() {
                 loading="lazy"
               />
             </div>
-            <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-[#0d0d14]" />
+            <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-black" />
           </div>
           <div>
             <h3 className="text-sm font-mono font-bold text-white uppercase tracking-wider">

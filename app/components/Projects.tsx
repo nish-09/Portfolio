@@ -123,7 +123,7 @@ export default function Projects() {
               className="fixed inset-0 z-[101] flex items-center justify-center p-2 sm:p-4 md:p-8 pointer-events-none pt-[max(0.5rem,env(safe-area-inset-top,0px))] pb-[max(0.5rem,env(safe-area-inset-bottom,0px))] pl-[max(0.5rem,env(safe-area-inset-left,0px))] pr-[max(0.5rem,env(safe-area-inset-right,0px))]"
             >
               <div
-                className="relative w-full min-w-0 max-w-4xl max-h-[min(92dvh,92svh)] overflow-y-auto overscroll-contain rounded-xl sm:rounded-3xl bg-[#0d0d14] border border-white/10 shadow-2xl pointer-events-auto"
+                className="relative w-full min-w-0 max-w-4xl max-h-[min(92dvh,92svh)] overflow-y-auto overscroll-contain rounded-xl sm:rounded-3xl bg-black border border-white/10 shadow-2xl pointer-events-auto"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="relative h-44 sm:h-56 md:h-80 w-full min-w-0 overflow-hidden rounded-t-xl sm:rounded-t-3xl">
@@ -132,7 +132,7 @@ export default function Projects() {
                     alt={selected.text}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d14] via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
 
                   <button
                     onClick={() => setSelected(null)}

@@ -109,7 +109,7 @@ export default function PortfolioPillNav() {
       activeHref={activeHref}
       onItemClick={handleItemClick}
       baseColor="#ffffff"
-      pillColor="rgba(255, 255, 255, 0.03)"
+      pillColor="rgba(255, 255, 255, 0.05)"
       hoveredPillTextColor="#000000"
       pillTextColor="#ffffff"
       ease="power3.easeOut"

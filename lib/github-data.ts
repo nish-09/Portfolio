@@ -1,9 +1,9 @@
 export const GITHUB_USERNAME = "nish-09";
 
 export const STATS_THEME =
-  "transparent&title_color=ffffff&text_color=ffffff99&icon_color=a855f7&border_color=ffffff15&bg_color=0d0d14";
+  "transparent&title_color=ffffff&text_color=ffffff99&icon_color=a855f7&border_color=ffffff15&bg_color=000000";
 export const STREAK_THEME =
-  "background=0d0d14&sideNums=ffffff&sideLabels=ffffff66&dates=ffffff44&ring=a855f7&fire=a855f7&currStreakNum=ffffff&currStreakLabel=a855f7&border=ffffff15";
+  "background=000000&sideNums=ffffff&sideLabels=ffffff66&dates=ffffff44&ring=a855f7&fire=a855f7&currStreakNum=ffffff&currStreakLabel=a855f7&border=ffffff15";
 
 const STATS_BASE = "https://gh-stats.com/api";
 

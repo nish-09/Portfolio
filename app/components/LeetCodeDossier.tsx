@@ -116,7 +116,7 @@ function SubmissionActivityTimeline({
   return (
     <div
       ref={ref}
-      className="rounded-2xl border border-white/10 bg-[#0d0d14] p-4 sm:p-5 glow-pulse-orange overflow-x-auto"
+      className="rounded-2xl border border-white/10 bg-black p-4 sm:p-5 glow-pulse-orange overflow-x-auto"
     >
       <div className="flex flex-wrap items-center justify-between gap-3 mb-3 min-w-[520px]">
         <h3 className="text-[10px] font-mono tracking-[0.2em] text-white/40 uppercase">
@@ -324,7 +324,7 @@ export default function LeetCodeDossier() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             whileHover={{ y: -4 }}
-            className="p-6 sm:p-8 rounded-2xl border border-white/10 bg-[#0d0d14] flex flex-col items-center hover:border-white/20 transition-all duration-300 shadow-xl glow-pulse-orange"
+            className="p-6 sm:p-8 rounded-2xl border border-white/10 bg-black flex flex-col items-center hover:border-white/20 transition-all duration-300 shadow-xl glow-pulse-orange"
           >
             <h3 className="text-lg font-mono font-bold tracking-wider text-white mb-6 uppercase flex items-center gap-2">
               <svg className="w-5 h-5 text-amber-500" viewBox="0 0 24 24" fill="currentColor">
@@ -438,7 +438,7 @@ export default function LeetCodeDossier() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             whileHover={{ y: -4 }}
-            className="p-6 sm:p-8 rounded-2xl border border-white/10 bg-[#0d0d14] flex flex-col hover:border-white/20 transition-all duration-300 shadow-xl glow-pulse-orange h-full"
+            className="p-6 sm:p-8 rounded-2xl border border-white/10 bg-black flex flex-col hover:border-white/20 transition-all duration-300 shadow-xl glow-pulse-orange h-full"
           >
             <h3 className="text-lg font-mono font-bold tracking-wider text-white mb-6 uppercase flex items-center gap-2">
               <svg className="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -525,7 +525,7 @@ export default function LeetCodeDossier() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             whileHover={{ y: -4 }}
-            className="p-6 sm:p-8 rounded-2xl border border-white/10 bg-[#0d0d14] flex flex-col hover:border-white/20 transition-all duration-300 shadow-xl glow-pulse-orange h-full lg:col-span-1"
+            className="p-6 sm:p-8 rounded-2xl border border-white/10 bg-black flex flex-col hover:border-white/20 transition-all duration-300 shadow-xl glow-pulse-orange h-full lg:col-span-1"
           >
             <h3 className="text-lg font-mono font-bold tracking-wider text-white mb-6 uppercase flex items-center gap-2">
               <svg className="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -614,9 +614,9 @@ export default function LeetCodeDossier() {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="w-full mt-6 rounded-2xl border border-amber-500/20 bg-[#07070b] overflow-hidden"
+              className="w-full mt-6 rounded-2xl border border-amber-500/20 bg-black overflow-hidden"
             >
-              <div className="flex items-center justify-between px-5 py-3 border-b border-white/5 bg-[#0d0d14]">
+              <div className="flex items-center justify-between px-5 py-3 border-b border-white/5 bg-black">
                 <div className="flex flex-wrap items-center gap-3 min-w-0">
                   <span className="text-xs font-mono font-bold text-white truncate">
                     {selectedSolution.title}

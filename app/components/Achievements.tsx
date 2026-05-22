@@ -141,7 +141,7 @@ export default function Achievements() {
             key={item.title}
             variants={cardVariants}
             whileHover={{ y: -4, scale: 1.02 }}
-            className={`group relative flex flex-col gap-3 p-5 sm:p-6 rounded-2xl border border-white/10 bg-[#0d0d14] hover:border-emerald-500/25 hover:bg-white/[0.03] transition-colors duration-300 ${
+            className={`group relative flex flex-col gap-3 p-5 sm:p-6 rounded-2xl border border-white/10 bg-black hover:border-emerald-500/25 hover:bg-white/[0.03] transition-colors duration-300 ${
               i === ACHIEVEMENTS.length - 1 && ACHIEVEMENTS.length % 3 !== 0
                 ? "sm:col-span-2 lg:col-span-1"
                 : ""

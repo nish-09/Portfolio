@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #101010;
+  --color-background: #000000;
   --color-foreground: #fcfcfc;
   --font-sans: var(--font-bruno);
 }
 
 :root {
-  --background: #101010;
+  --background: #000000;
   --foreground: #fcfcfc;
   --font-bruno: var(--font-bruno);
   --font-frijole: var(--font-frijole);

@@ -87,7 +87,7 @@ function RepoCard({ repo, index }: { repo: GithubRepo; index: number }) {
       viewport={{ once: true, margin: "0px 0px -5% 0px" }}
       transition={{ duration: 0.55, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }}
       whileHover={{ y: -5, scale: 1.015 }}
-      className="group relative flex flex-col gap-3 p-5 rounded-2xl border border-white/10 bg-[#0d0d14] hover:border-white/20 hover:bg-white/5 transition-all duration-300 cursor-pointer"
+      className="group relative flex flex-col gap-3 p-5 rounded-2xl border border-white/10 bg-black hover:border-white/20 hover:bg-white/5 transition-all duration-300 cursor-pointer"
     >
       {/* Top row */}
       <div className="flex items-start justify-between gap-2">
@@ -187,7 +187,7 @@ function SnakeStrip() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "0px 0px -5% 0px" }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      className="w-full rounded-2xl border border-white/10 bg-[#0d0d14] overflow-hidden relative"
+      className="w-full rounded-2xl border border-white/10 bg-black overflow-hidden relative"
       aria-label="GitHub contribution snake animation"
     >
       <div className="flex items-center gap-2 px-5 py-3 border-b border-white/5">
@@ -197,7 +197,7 @@ function SnakeStrip() {
         <span className="w-1.5 h-1.5 rounded-full bg-green-500/70 animate-pulse" aria-hidden="true" />
       </div>
 
-      <div className="relative flex justify-center items-center py-4 px-4 min-h-[5.5rem] sm:min-h-[6.5rem]">
+      <div className="relative flex justify-center items-center py-6 sm:py-8 px-4 sm:px-6 min-h-[10rem] sm:min-h-[12rem] md:min-h-[14rem]">
         {!loaded && !failed && (
           <div className="shimmer absolute inset-4 rounded-xl" aria-hidden="true" />
         )}
@@ -214,7 +214,7 @@ function SnakeStrip() {
                 setFailed(true);
               }
             }}
-            className={`relative z-10 w-full max-w-full h-auto object-contain max-h-24 sm:max-h-28 transition-opacity duration-700 ${loaded ? "opacity-100" : "opacity-0"}`}
+            className={`relative z-10 w-full max-w-full h-auto object-contain max-h-40 sm:max-h-52 md:max-h-64 lg:max-h-72 transition-opacity duration-700 ${loaded ? "opacity-100" : "opacity-0"}`}
             loading="lazy"
           />
         ) : (
@@ -240,7 +240,7 @@ function ProfileSummary() {
       viewport={{ once: true, margin: "0px 0px -8% 0px" }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       whileHover={{ y: -4, scale: 1.01 }}
-      className="group flex items-center gap-4 p-5 rounded-2xl border border-white/10 bg-[#0d0d14] hover:border-white/20 hover:bg-white/5 transition-all duration-300"
+      className="group flex items-center gap-4 p-5 rounded-2xl border border-white/10 bg-black hover:border-white/20 hover:bg-white/5 transition-all duration-300"
     >
       <div className="relative shrink-0">
         <img
@@ -252,7 +252,7 @@ function ProfileSummary() {
           loading="lazy"
         />
         <span
-          className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-[#0d0d14]"
+          className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-black"
           aria-label="Active"
         />
       </div>
