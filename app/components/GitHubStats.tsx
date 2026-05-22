@@ -8,7 +8,7 @@ import {
   useSpring,
   useInView,
 } from "framer-motion";
-import { StorySection } from "./StorySection";
+import GitHubActivityGraphs from "./GitHubActivityGraphs";
 import "./GitHubStats.css";
 
 // ─── Config ────────────────────────────────────────────────────────────────────
@@ -218,9 +218,11 @@ function RepoCard({ repo, index }: { repo: Repo; index: number }) {
 
 // ─── Snake Strip ───────────────────────────────────────────────────────────────
 function SnakeStrip() {
-  const [loaded, setLoaded] = useState(false);
   const snakeSrc = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${GITHUB_USERNAME}/output/github-contribution-grid-snake-dark.svg`;
   const fallbackSrc = `https://raw.githubusercontent.com/platane/snk/output/github-contribution-grid-snake-dark.svg`;
+
+  const [imgSrc, setImgSrc] = useState(snakeSrc);
+  const [loaded, setLoaded] = useState(false);
 
   return (
     <motion.div
@@ -252,14 +254,12 @@ function SnakeStrip() {
           {[0, 1].map((i) => (
             <img
               key={i}
-              src={snakeSrc}
+              src={imgSrc}
               alt=""
               onLoad={() => setLoaded(true)}
-              onError={(e) => {
-                // fallback to platane demo snake on error
-                const t = e.currentTarget;
-                if (!t.src.includes("platane")) {
-                  t.src = fallbackSrc;
+              onError={() => {
+                if (imgSrc !== fallbackSrc) {
+                  setImgSrc(fallbackSrc);
                 }
               }}
               className="h-20 sm:h-24 w-auto shrink-0"
@@ -388,17 +388,13 @@ export default function GitHubStats() {
       .finally(() => setReposLoading(false));
   }, []);
 
-  const statsBase = "https://github-readme-stats.vercel.app/api";
+  const statsBase = "https://gh-stats.com/api";
   const statsUrl = `${statsBase}?username=${GITHUB_USERNAME}&show_icons=true&count_private=true&include_all_commits=true&hide_border=true&${STATS_THEME}&card_width=400`;
   const langsUrl = `${statsBase}/top-langs?username=${GITHUB_USERNAME}&layout=compact&hide_border=true&langs_count=8&${STATS_THEME}&card_width=400`;
-  const streakUrl = `https://github-readme-streak-stats.herokuapp.com/?user=${GITHUB_USERNAME}&hide_border=true&${STREAK_THEME}&card_width=400`;
+  const streakUrl = `https://streak-stats.demolab.com/?user=${GITHUB_USERNAME}&hide_border=true&${STREAK_THEME}&card_width=400`;
 
   return (
     <div ref={containerRef} className="w-full">
-      <StorySection
-        id="github"
-        className="relative w-full min-w-0 max-w-[100vw] py-12 sm:py-16 md:py-20 lg:py-24 px-[max(1rem,env(safe-area-inset-left,0px))] overflow-hidden bg-transparent"
-      >
         <motion.div style={{ opacity: sectionOpacity, y: sectionY }} className="w-full max-w-7xl mx-auto">
 
           {/* ── Section Heading ── */}
@@ -476,7 +472,10 @@ export default function GitHubStats() {
               <SnakeStrip />
             </div>
 
-            {/* Row 4: Repo Cards */}
+            {/* Row 4: Activity Graphs */}
+            <GitHubActivityGraphs />
+
+            {/* Row 5: Repo Cards */}
             <div className="lg:col-span-3">
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
@@ -541,7 +540,6 @@ export default function GitHubStats() {
 
           </div>
         </motion.div>
-      </StorySection>
     </div>
   );
 }

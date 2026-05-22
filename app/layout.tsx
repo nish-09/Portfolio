@@ -4,7 +4,7 @@ import "./globals.css";
 import ClickSpark from "./components/ClickSpark";
 import CustomCursor from "./components/CustomCursor";
 import SitePreloader from "./components/SitePreloader";
-import PortfolioBubbleMenu from "./components/PortfolioBubbleMenu";
+import PortfolioPillNav from "./components/PortfolioPillNav";
 import SmoothScroll from "./components/SmoothScroll";
 
 const brunoAce = Bruno_Ace_SC({
@@ -60,7 +60,7 @@ export default function RootLayout({
             extraScale={1}
           />
           <SitePreloader>{children}</SitePreloader>
-          <PortfolioBubbleMenu />
+          <PortfolioPillNav />
         </SmoothScroll>
       </body>
     </html>

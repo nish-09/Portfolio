@@ -6,7 +6,12 @@ import ConnectSection from "./components/ConnectSection";
 import AboutMe from "./components/AboutMe";
 import Galaxy from "./components/Galaxy";
 import GitHubStats from "./components/GitHubStats";
+import LeetCodeDossier from "./components/LeetCodeDossier";
+import Achievements from "./components/Achievements";
 import { StoryBlock, StorySection } from "./components/StorySection";
+
+const statsSectionClassName =
+  "relative w-full min-w-0 max-w-[100vw] py-12 sm:py-16 md:py-20 lg:py-24 px-[max(1rem,env(safe-area-inset-left,0px))] overflow-hidden bg-transparent";
 
 export default function Home() {
   return (
@@ -16,9 +21,9 @@ export default function Home() {
           mouseRepulsion={true}
           mouseInteraction={true}
           density={1}
-          glowIntensity={0.8}
-          saturation={1}
-          hueShift={130}
+          glowIntensity={0.4}
+          saturation={0.4}
+          hueShift={250}
           rotationSpeed={0.05}
           repulsionStrength={0.5}
           starSpeed={0.3}
@@ -67,7 +72,11 @@ export default function Home() {
           </div>
         </StorySection>
 
-        <GitHubStats />
+        <StorySection id="stats" className={statsSectionClassName}>
+          <GitHubStats />
+          <LeetCodeDossier />
+          <Achievements />
+        </StorySection>
 
         <ConnectSection />
       </div>

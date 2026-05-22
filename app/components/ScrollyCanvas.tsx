@@ -8,7 +8,7 @@ import {
   useSpring
 } from "framer-motion";
 
-const FRAME_COUNT = 41;
+const FRAME_COUNT = 54;
 
 export default function ScrollyCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -42,7 +42,7 @@ export default function ScrollyCanvas() {
     for (let i = 0; i < FRAME_COUNT; i++) {
       const img = new window.Image();
       const frameNum = i.toString().padStart(2, "0");
-      img.src = `/sequence/frame_${frameNum}_delay-0.066s.png`;
+      img.src = `/sequence/frame_${frameNum}_delay-0.034s.png`;
 
       img.onload = () => {
         loadedCount++;
