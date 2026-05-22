@@ -91,11 +91,12 @@ export default function Projects() {
       >
         <CircularGallery
           items={PROJECTS}
-          bend={1}
+          bend={0}
           textColor="#ffffff"
-          borderRadius={0.11}
-          scrollSpeed={2.4}
-          scrollEase={0.1}
+          borderRadius={0.13}
+          scrollSpeed={5}
+          scrollEase={0.15}
+          font="bold 24px ui-monospace, monospace"
           onItemClick={handleItemClick}
         />
       </div>

@@ -1,16 +1,24 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import {
+  FiBarChart2,
+  FiBriefcase,
+  FiHome,
+  FiMail,
+  FiUser,
+  FiZap,
+} from "react-icons/fi";
 import { useLenis, scrollToSection } from "./SmoothScroll";
 import PillNav, { type PillNavItem } from "./PillNav";
 
 const NAV_ITEMS: PillNavItem[] = [
-  { label: "Home", href: "#home", ariaLabel: "Home — top of page" },
-  { label: "About", href: "#about", ariaLabel: "About" },
-  { label: "Projects", href: "#projects", ariaLabel: "Projects" },
-  { label: "Skills", href: "#skills", ariaLabel: "Skills" },
-  { label: "Stats", href: "#stats", ariaLabel: "Stats & Achievements" },
-  { label: "Contact", href: "#contact", ariaLabel: "Contact" },
+  { label: "Home", href: "#home", icon: <FiHome />, ariaLabel: "Home — top of page" },
+  { label: "About", href: "#about", icon: <FiUser />, ariaLabel: "About" },
+  { label: "Projects", href: "#projects", icon: <FiBriefcase />, ariaLabel: "Projects" },
+  { label: "Skills", href: "#skills", icon: <FiZap />, ariaLabel: "Skills" },
+  { label: "Stats", href: "#stats", icon: <FiBarChart2 />, ariaLabel: "Stats & Achievements" },
+  { label: "Contact", href: "#contact", icon: <FiMail />, ariaLabel: "Contact" },
 ];
 
 /** Show navbar once the About section enters the viewport (past hero / scrolly canvas). */

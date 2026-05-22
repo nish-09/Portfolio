@@ -3,6 +3,7 @@
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import LetterGlitch from './LetterGlitch';
+import { preloadGithubData } from '@/lib/github-data';
 
 const MIN_MS = 5_000;
 
@@ -28,6 +29,11 @@ export default function SitePreloader({ children }: SitePreloaderProps) {
   const [exiting, setExiting] = useState(false);
   const [progress, setProgress] = useState(0);
   const [lineIndex, setLineIndex] = useState(0);
+
+  useEffect(() => {
+    preloadGithubData();
+    fetch("/api/leetcode").catch(() => undefined);
+  }, []);
 
   useEffect(() => {
     const onLoad = () => setPageLoaded(true);

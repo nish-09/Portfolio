@@ -9,25 +9,14 @@ import {
   useInView,
 } from "framer-motion";
 import GitHubActivityGraphs from "./GitHubActivityGraphs";
+import {
+  GITHUB_STATS_URLS,
+  GITHUB_USERNAME,
+  getGithubRepos,
+  isGithubImagePreloaded,
+  type GithubRepo,
+} from "@/lib/github-data";
 import "./GitHubStats.css";
-
-// ─── Config ────────────────────────────────────────────────────────────────────
-const GITHUB_USERNAME = "nish-09";
-const STATS_THEME = "transparent&title_color=ffffff&text_color=ffffff99&icon_color=a855f7&border_color=ffffff15&bg_color=0d0d14";
-const STREAK_THEME = "background=0d0d14&sideNums=ffffff&sideLabels=ffffff66&dates=ffffff44&ring=a855f7&fire=a855f7&currStreakNum=ffffff&currStreakLabel=a855f7&border=ffffff15";
-
-// ─── Types ─────────────────────────────────────────────────────────────────────
-interface Repo {
-  id: number;
-  name: string;
-  description: string | null;
-  html_url: string;
-  stargazers_count: number;
-  forks_count: number;
-  language: string | null;
-  updated_at: string;
-  topics: string[];
-}
 
 // ─── Animated Counter ──────────────────────────────────────────────────────────
 function AnimatedCounter({ value, suffix = "" }: { value: number; suffix?: string }) {
@@ -66,41 +55,6 @@ function CardSkeleton({ className = "" }: { className?: string }) {
   );
 }
 
-// ─── Stats SVG Card ────────────────────────────────────────────────────────────
-function StatsSvgCard({
-  src,
-  alt,
-  className = "",
-  delay = 0,
-}: {
-  src: string;
-  alt: string;
-  className?: string;
-  delay?: number;
-}) {
-  const [loaded, setLoaded] = useState(false);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "0px 0px -10% 0px" }}
-      transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
-      whileHover={{ y: -4, scale: 1.015 }}
-      className={`relative rounded-2xl border border-white/10 bg-[#0d0d14] overflow-hidden transition-all duration-300 hover:border-white/20 glow-pulse-purple ${className}`}
-    >
-      {!loaded && <CardSkeleton className="absolute inset-0 rounded-2xl border-0" />}
-      <img
-        src={src}
-        alt={alt}
-        onLoad={() => setLoaded(true)}
-        className={`w-full h-full object-contain transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"}`}
-        loading="lazy"
-      />
-    </motion.div>
-  );
-}
-
 // ─── Repo Card ─────────────────────────────────────────────────────────────────
 const LANG_COLORS: Record<string, string> = {
   TypeScript: "#3178c6",
@@ -115,7 +69,7 @@ const LANG_COLORS: Record<string, string> = {
   Shell: "#89e051",
 };
 
-function RepoCard({ repo, index }: { repo: Repo; index: number }) {
+function RepoCard({ repo, index }: { repo: GithubRepo; index: number }) {
   const langColor = repo.language ? (LANG_COLORS[repo.language] ?? "#ffffff50") : "#ffffff30";
   const updatedDate = new Date(repo.updated_at).toLocaleDateString("en-US", {
     month: "short",
@@ -218,11 +172,14 @@ function RepoCard({ repo, index }: { repo: Repo; index: number }) {
 
 // ─── Snake Strip ───────────────────────────────────────────────────────────────
 function SnakeStrip() {
-  const snakeSrc = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${GITHUB_USERNAME}/output/github-contribution-grid-snake-dark.svg`;
-  const fallbackSrc = `https://raw.githubusercontent.com/platane/snk/output/github-contribution-grid-snake-dark.svg`;
+  const snakeSrc = GITHUB_STATS_URLS.snake;
+  const fallbackSrc = GITHUB_STATS_URLS.snakeFallback;
 
-  const [imgSrc, setImgSrc] = useState(snakeSrc);
-  const [loaded, setLoaded] = useState(false);
+  const [imgSrc, setImgSrc] = useState<string>(snakeSrc);
+  const [loaded, setLoaded] = useState(
+    () => isGithubImagePreloaded(snakeSrc) || isGithubImagePreloaded(fallbackSrc),
+  );
+  const [failed, setFailed] = useState(false);
 
   return (
     <motion.div
@@ -233,7 +190,6 @@ function SnakeStrip() {
       className="w-full rounded-2xl border border-white/10 bg-[#0d0d14] overflow-hidden relative"
       aria-label="GitHub contribution snake animation"
     >
-      {/* Label */}
       <div className="flex items-center gap-2 px-5 py-3 border-b border-white/5">
         <span className="text-xs font-mono tracking-widest text-white/30 uppercase">
           Contribution Snake
@@ -241,32 +197,31 @@ function SnakeStrip() {
         <span className="w-1.5 h-1.5 rounded-full bg-green-500/70 animate-pulse" aria-hidden="true" />
       </div>
 
-      {/* Snake — doubles itself for seamless loop */}
-      <div className="overflow-hidden py-3 relative">
-        {!loaded && (
-          <div className="shimmer h-20 mx-4 rounded-xl" />
+      <div className="relative flex justify-center items-center py-4 px-4 min-h-[5.5rem] sm:min-h-[6.5rem]">
+        {!loaded && !failed && (
+          <div className="shimmer absolute inset-4 rounded-xl" aria-hidden="true" />
         )}
-        <div
-          className={`flex snake-drift transition-opacity duration-700 ${loaded ? "opacity-100" : "opacity-0"}`}
-          aria-hidden="true"
-        >
-          {/* Two copies for seamless loop */}
-          {[0, 1].map((i) => (
-            <img
-              key={i}
-              src={imgSrc}
-              alt=""
-              onLoad={() => setLoaded(true)}
-              onError={() => {
-                if (imgSrc !== fallbackSrc) {
-                  setImgSrc(fallbackSrc);
-                }
-              }}
-              className="h-20 sm:h-24 w-auto shrink-0"
-              loading="lazy"
-            />
-          ))}
-        </div>
+        {!failed ? (
+          <img
+            src={imgSrc}
+            alt="GitHub contribution graph with snake animation"
+            onLoad={() => setLoaded(true)}
+            onError={() => {
+              if (imgSrc !== fallbackSrc) {
+                setLoaded(false);
+                setImgSrc(fallbackSrc);
+              } else {
+                setFailed(true);
+              }
+            }}
+            className={`relative z-10 w-full max-w-full h-auto object-contain max-h-24 sm:max-h-28 transition-opacity duration-700 ${loaded ? "opacity-100" : "opacity-0"}`}
+            loading="lazy"
+          />
+        ) : (
+          <p className="text-white/35 text-xs font-mono text-center py-4">
+            Contribution snake unavailable — add the snk workflow to your profile repo.
+          </p>
+        )}
       </div>
     </motion.div>
   );
@@ -371,27 +326,15 @@ export default function GitHubStats() {
   const sectionOpacity = useTransform(smoothProgress, [0.03, 0.18, 0.88, 0.97], [0, 1, 1, 0]);
   const sectionY = useTransform(smoothProgress, [0.03, 0.18, 0.88, 0.97], [50, 0, 0, -50]);
 
-  const [repos, setRepos] = useState<Repo[]>([]);
+  const [repos, setRepos] = useState<GithubRepo[]>([]);
   const [reposLoading, setReposLoading] = useState(true);
 
   useEffect(() => {
-    fetch(
-      `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=stars&per_page=8&type=public`
-    )
-      .then((r) => r.json())
-      .then((data: Repo[]) => {
-        if (Array.isArray(data)) {
-          setRepos(data.slice(0, 6));
-        }
-      })
+    getGithubRepos()
+      .then(setRepos)
       .catch(() => setRepos([]))
       .finally(() => setReposLoading(false));
   }, []);
-
-  const statsBase = "https://gh-stats.com/api";
-  const statsUrl = `${statsBase}?username=${GITHUB_USERNAME}&show_icons=true&count_private=true&include_all_commits=true&hide_border=true&${STATS_THEME}&card_width=400`;
-  const langsUrl = `${statsBase}/top-langs?username=${GITHUB_USERNAME}&layout=compact&hide_border=true&langs_count=8&${STATS_THEME}&card_width=400`;
-  const streakUrl = `https://streak-stats.demolab.com/?user=${GITHUB_USERNAME}&hide_border=true&${STREAK_THEME}&card_width=400`;
 
   return (
     <div ref={containerRef} className="w-full">
@@ -429,45 +372,17 @@ export default function GitHubStats() {
           </div>
 
           {/* ── Bento Grid ── */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5">
+          <div className="grid grid-cols-1 gap-4 sm:gap-5">
 
-            {/* Row 1 col 1-2: Profile + Pills */}
-            <div className="lg:col-span-2 flex flex-col gap-4">
-              <ProfileSummary />
+            <ProfileSummary />
 
-              {/* Quick stat pills */}
-              <div className="grid grid-cols-3 gap-3">
-                <StatPill label="Public Repos" value={repos.length > 0 ? repos.length + 2 : 12} delay={0.1} />
-                <StatPill label="Total Stars" value={repos.reduce((s, r) => s + r.stargazers_count, 0)} suffix="+" delay={0.18} />
-                <StatPill label="Forks" value={repos.reduce((s, r) => s + r.forks_count, 0)} delay={0.26} />
-              </div>
+            <div className="grid grid-cols-3 gap-3 max-w-xl">
+              <StatPill label="Public Repos" value={repos.length > 0 ? repos.length : 0} delay={0.1} />
+              <StatPill label="Total Stars" value={repos.reduce((s, r) => s + r.stargazers_count, 0)} suffix="+" delay={0.18} />
+              <StatPill label="Forks" value={repos.reduce((s, r) => s + r.forks_count, 0)} delay={0.26} />
             </div>
 
-            {/* Row 1 col 3: Languages */}
-            <StatsSvgCard
-              src={langsUrl}
-              alt="Top Programming Languages"
-              className="min-h-[180px]"
-              delay={0.1}
-            />
-
-            {/* Row 2: Stats card */}
-            <StatsSvgCard
-              src={statsUrl}
-              alt="GitHub Statistics"
-              className="lg:col-span-2 min-h-[180px]"
-              delay={0.12}
-            />
-
-            {/* Row 2 col 3: Streak */}
-            <StatsSvgCard
-              src={streakUrl}
-              alt="GitHub Streak Stats"
-              className="min-h-[180px]"
-              delay={0.2}
-            />
-
-            {/* Row 3: Snake full-width */}
+            {/* Snake full-width */}
             <div className="lg:col-span-3">
               <SnakeStrip />
             </div>

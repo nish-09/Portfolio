@@ -3,6 +3,7 @@ import { Bruno_Ace_SC, Frijole, Rubik_Dirt } from "next/font/google";
 import "./globals.css";
 import ClickSpark from "./components/ClickSpark";
 import CustomCursor from "./components/CustomCursor";
+import GitHubPrefetch from "./components/GitHubPrefetch";
 import SitePreloader from "./components/SitePreloader";
 import PortfolioPillNav from "./components/PortfolioPillNav";
 import SmoothScroll from "./components/SmoothScroll";
@@ -49,6 +50,7 @@ export default function RootLayout({
     >
       <body className="min-h-full min-h-[100dvh] w-full min-w-0 flex flex-col font-sans selection:bg-white/30 selection:text-white overflow-x-clip">
         <SmoothScroll>
+          <GitHubPrefetch />
           <CustomCursor />
           <ClickSpark
             sparkColor="#ffffff"

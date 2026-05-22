@@ -1,14 +1,3 @@
-/* Snake animation container slow drift */
-@keyframes snakeDrift {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-.snake-drift {
-  animation: snakeDrift 40s linear infinite;
-  will-change: transform;
-}
-
 /* Subtle floating glow pulse for stat cards */
 @keyframes glowPulse {
   0%, 100% { box-shadow: 0 0 0px 0 rgba(168, 85, 247, 0); }

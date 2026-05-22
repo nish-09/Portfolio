@@ -2,14 +2,8 @@
 
 import { useRef, useEffect, useState, useMemo } from "react";
 import { motion, useInView } from "framer-motion";
+import { getGithubEvents, GITHUB_USERNAME, type GithubEvent } from "@/lib/github-data";
 import "./GitHubStats.css";
-
-// ─── Types ─────────────────────────────────────────────────────────────────────
-interface GHEvent {
-  type: string;
-  created_at: string;
-  repo: { name: string };
-}
 
 interface MonthlyData {
   label: string;
@@ -31,12 +25,11 @@ interface BreakdownData {
   value: number;
 }
 
-const GITHUB_USERNAME = "nish-09";
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 // ─── Utility: process events into chart data ──────────────────────────────────
-function processEvents(events: GHEvent[]) {
+function processEvents(events: GithubEvent[]) {
   // Monthly activity trend (last 12 months)
   const monthCounts = new Map<string, number>();
   const now = new Date();
@@ -545,30 +538,14 @@ function ContributionHeatmap({ heatmap }: { heatmap: Record<string, number> }) {
 
 // ─── Main Export ────────────────────────────────────────────────────────────────
 export default function GitHubActivityGraphs() {
-  const [events, setEvents] = useState<GHEvent[]>([]);
+  const [events, setEvents] = useState<GithubEvent[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch last 100 public events (max GitHub provides without auth)
-    const fetchEvents = async () => {
-      try {
-        const pages = [1, 2, 3]; // 3 pages × 30 = up to 90 events
-        const results = await Promise.all(
-          pages.map((p) =>
-            fetch(
-              `https://api.github.com/users/${GITHUB_USERNAME}/events/public?per_page=30&page=${p}`
-            ).then((r) => r.json())
-          )
-        );
-        const allEvents = results.flat().filter((e: any) => e && e.type);
-        setEvents(allEvents);
-      } catch {
-        setEvents([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchEvents();
+    getGithubEvents()
+      .then(setEvents)
+      .catch(() => setEvents([]))
+      .finally(() => setLoading(false));
   }, []);
 
   const { monthly, hourly, daily, breakdownArr, heatmapData } = useMemo(

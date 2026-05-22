@@ -1,4 +1,5 @@
 import LogoLoop from "./LogoLoop";
+import EnquirySection from "./EnquirySection";
 import { StorySection } from "./StorySection";
 import {
   SiGithub, SiWhatsapp, SiInstagram,
@@ -38,6 +39,10 @@ export default function ConnectSection() {
           I&rsquo;m always open to new ideas, collaborations, or a simple hello.
           Reach out through any of the channels below.
         </p>
+      </div>
+
+      <div className="relative z-10 w-full min-w-0 mb-12 sm:mb-16">
+        <EnquirySection />
       </div>
 
       <div className="relative z-10 mb-8 w-full min-w-0 px-2 sm:px-4">

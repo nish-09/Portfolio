@@ -20,14 +20,14 @@ export default function Home() {
         <Galaxy
           mouseRepulsion={true}
           mouseInteraction={true}
-          density={1}
+          density={3}
           glowIntensity={0.4}
           saturation={0.4}
           hueShift={250}
           rotationSpeed={0.05}
           repulsionStrength={0.5}
-          starSpeed={0.3}
-          speed={0.2}
+          starSpeed={0.2}
+          speed={0.3}
           transparent={true}
         />
       </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { gsap } from "gsap";
 import "./PillNav.css";
@@ -9,7 +9,21 @@ export type PillNavItem = {
   label: string;
   href: string;
   ariaLabel?: string;
+  icon?: ReactNode;
 };
+
+function PillLabelContent({ item }: { item: PillNavItem }) {
+  return (
+    <>
+      {item.icon ? (
+        <span className="pill-glass-icon" aria-hidden="true">
+          {item.icon}
+        </span>
+      ) : null}
+      {item.label}
+    </>
+  );
+}
 
 export type PillNavProps = {
   logo: string;
@@ -352,9 +366,11 @@ export default function PillNav({
                       }}
                     />
                     <span className="label-stack">
-                      <span className="pill-label">{item.label}</span>
+                      <span className="pill-label">
+                        <PillLabelContent item={item} />
+                      </span>
                       <span className="pill-label-hover" aria-hidden="true">
-                        {item.label}
+                        <PillLabelContent item={item} />
                       </span>
                     </span>
                   </Link>
@@ -376,9 +392,11 @@ export default function PillNav({
                       }}
                     />
                     <span className="label-stack">
-                      <span className="pill-label">{item.label}</span>
+                      <span className="pill-label">
+                        <PillLabelContent item={item} />
+                      </span>
                       <span className="pill-label-hover" aria-hidden="true">
-                        {item.label}
+                        <PillLabelContent item={item} />
                       </span>
                     </span>
                   </a>
@@ -409,7 +427,7 @@ export default function PillNav({
                   className={`mobile-menu-link${activeHref === item.href ? " is-active" : ""}`}
                   onClick={(e: any) => handleLinkClick(e, item)}
                 >
-                  {item.label}
+                  <PillLabelContent item={item} />
                 </Link>
               ) : (
                 <a
@@ -417,7 +435,7 @@ export default function PillNav({
                   className={`mobile-menu-link${activeHref === item.href ? " is-active" : ""}`}
                   onClick={(e) => handleLinkClick(e, item)}
                 >
-                  {item.label}
+                  <PillLabelContent item={item} />
                 </a>
               )}
             </li>
