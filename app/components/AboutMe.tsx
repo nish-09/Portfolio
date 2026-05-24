@@ -16,8 +16,8 @@ interface TypewriterProps {
 
 function Typewriter({
   paragraphs,
-  speed = 10,
-  delayBetweenParagraphs = 300,
+  speed = 30,
+  delayBetweenParagraphs = 200,
   onComplete,
 }: TypewriterProps) {
   const [displayedParagraphs, setDisplayedParagraphs] = useState<string[]>(
