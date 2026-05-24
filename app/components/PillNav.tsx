@@ -60,84 +60,15 @@ export default function PillNav({
 }: PillNavProps) {
   const resolvedPillTextColor = pillTextColor ?? baseColor;
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  
-  const circleRefs = useRef<(HTMLSpanElement | null)[]>([]);
-  const tlRefs = useRef<(gsap.core.Timeline | null)[]>([]);
-  const activeTweenRefs = useRef<(gsap.core.Tween | null)[]>([]);
-  
+
   const logoImgRef = useRef<HTMLImageElement | null>(null);
   const logoTweenRef = useRef<gsap.core.Tween | null>(null);
   const hamburgerRef = useRef<HTMLButtonElement | null>(null);
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
   const navItemsRef = useRef<HTMLDivElement | null>(null);
-  const logoRef = useRef<any>(null);
+  const logoRef = useRef<HTMLAnchorElement | null>(null);
 
   useEffect(() => {
-    const layout = () => {
-      circleRefs.current.forEach((circle) => {
-        if (!circle?.parentElement) return;
-
-        const pill = circle.parentElement;
-        const rect = pill.getBoundingClientRect();
-        const { width: w, height: h } = rect;
-        
-        // Prevent layout calculation issues on 0 height/width
-        if (w === 0 || h === 0) return;
-
-        const R = ((w * w) / 4 + h * h) / (2 * h);
-        const D = Math.ceil(2 * R) + 2;
-        const delta = Math.ceil(R - Math.sqrt(Math.max(0, R * R - (w * w) / 4))) + 1;
-        const originY = D - delta;
-
-        circle.style.width = `${D}px`;
-        circle.style.height = `${D}px`;
-        circle.style.bottom = `-${delta}px`;
-
-        gsap.set(circle, {
-          xPercent: -50,
-          scale: 0,
-          transformOrigin: `50% ${originY}px`,
-        });
-
-        const label = pill.querySelector(".pill-label");
-        const white = pill.querySelector(".pill-label-hover");
-
-        if (label) gsap.set(label, { y: 0 });
-        if (white) gsap.set(white, { y: h + 12, opacity: 0 });
-
-        const index = circleRefs.current.indexOf(circle);
-        if (index === -1) return;
-
-        tlRefs.current[index]?.kill();
-        const tl = gsap.timeline({ paused: true });
-
-        tl.to(circle, { scale: 1.2, xPercent: -50, duration: 1.5, ease, overwrite: "auto" }, 0);
-
-        if (label) {
-          tl.to(label, { y: -(h + 8), duration: 1.5, ease, overwrite: "auto" }, 0);
-        }
-
-        if (white) {
-          gsap.set(white, { y: Math.ceil(h + 100), opacity: 0 });
-          tl.to(white, { y: 0, opacity: 1, duration: 1.5, ease, overwrite: "auto" }, 0);
-        }
-
-        tlRefs.current[index] = tl;
-      });
-    };
-
-    // Make sure we only layout active ref indices
-    circleRefs.current = circleRefs.current.slice(0, items.length);
-
-    layout();
-
-    const onResize = () => layout();
-    window.addEventListener("resize", onResize);
-
-    if (document.fonts?.ready) {
-      document.fonts.ready.then(layout).catch(() => {});
-    }
-
     const menu = mobileMenuRef.current;
     if (menu) {
       gsap.set(menu, { visibility: "hidden", opacity: 0, scaleY: 1 });
@@ -167,34 +98,9 @@ export default function PillNav({
     }
 
     return () => {
-      window.removeEventListener("resize", onResize);
-      tlRefs.current.forEach((tl) => tl?.kill());
-      activeTweenRefs.current.forEach((t) => t?.kill());
       logoTweenRef.current?.kill();
     };
-  }, [items, ease, initialLoadAnimation]);
-
-  const handleEnter = (i: number) => {
-    const tl = tlRefs.current[i];
-    if (!tl) return;
-    activeTweenRefs.current[i]?.kill();
-    activeTweenRefs.current[i] = tl.tweenTo(tl.duration(), {
-      duration: 0.35,
-      ease,
-      overwrite: "auto",
-    });
-  };
-
-  const handleLeave = (i: number) => {
-    const tl = tlRefs.current[i];
-    if (!tl) return;
-    activeTweenRefs.current[i]?.kill();
-    activeTweenRefs.current[i] = tl.tweenTo(0, {
-      duration: 0.25,
-      ease,
-      overwrite: "auto",
-    });
-  };
+  }, [ease, initialLoadAnimation]);
 
   const handleLogoEnter = () => {
     const img = logoImgRef.current;
@@ -240,7 +146,7 @@ export default function PillNav({
             duration: 0.3,
             ease,
             transformOrigin: "top center",
-          }
+          },
         );
       } else {
         gsap.to(menu, {
@@ -287,9 +193,7 @@ export default function PillNav({
   };
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, item: PillNavItem) => {
-    if (onItemClick) {
-      onItemClick(e, item);
-    }
+    onItemClick?.(e, item);
     if (isMobileMenuOpen) {
       closeMobileMenu();
     }
@@ -312,6 +216,43 @@ export default function PillNav({
     "--pill-text": resolvedPillTextColor,
   } as React.CSSProperties;
 
+  const renderPillLink = (item: PillNavItem) => {
+    const className = `pill${activeHref === item.href ? " is-active" : ""}`;
+    const label = (
+      <span className="label-stack">
+        <span className="pill-label">
+          <PillLabelContent item={item} />
+        </span>
+      </span>
+    );
+
+    if (isRouterLink(item.href)) {
+      return (
+        <Link
+          role="menuitem"
+          href={item.href}
+          className={className}
+          aria-label={item.ariaLabel || item.label}
+          onClick={(e: React.MouseEvent<HTMLAnchorElement>) => handleLinkClick(e, item)}
+        >
+          {label}
+        </Link>
+      );
+    }
+
+    return (
+      <a
+        role="menuitem"
+        href={item.href}
+        className={className}
+        aria-label={item.ariaLabel || item.label}
+        onClick={(e) => handleLinkClick(e, item)}
+      >
+        {label}
+      </a>
+    );
+  };
+
   return (
     <div
       className={`pill-nav-container${containerClassName ? ` ${containerClassName}` : ""}`}
@@ -323,9 +264,7 @@ export default function PillNav({
             href={items[0].href}
             aria-label="Home"
             onMouseEnter={handleLogoEnter}
-            ref={(el) => {
-              logoRef.current = el;
-            }}
+            ref={logoRef}
           >
             <img src={logo} alt={logoAlt} ref={logoImgRef} />
           </Link>
@@ -336,9 +275,7 @@ export default function PillNav({
             aria-label="Home"
             onMouseEnter={handleLogoEnter}
             onClick={(e) => items?.[0] && handleLinkClick(e, items[0])}
-            ref={(el) => {
-              logoRef.current = el;
-            }}
+            ref={logoRef}
           >
             <img src={logo} alt={logoAlt} ref={logoImgRef} />
           </a>
@@ -348,59 +285,7 @@ export default function PillNav({
           <ul className="pill-list" role="menubar">
             {items.map((item, i) => (
               <li key={item.href || `item-${i}`} role="none">
-                {isRouterLink(item.href) ? (
-                  <Link
-                    role="menuitem"
-                    href={item.href}
-                    className={`pill${activeHref === item.href ? " is-active" : ""}`}
-                    aria-label={item.ariaLabel || item.label}
-                    onMouseEnter={() => handleEnter(i)}
-                    onMouseLeave={() => handleLeave(i)}
-                    onClick={(e: any) => handleLinkClick(e, item)}
-                  >
-                    <span
-                      className="hover-circle"
-                      aria-hidden="true"
-                      ref={(el) => {
-                        circleRefs.current[i] = el;
-                      }}
-                    />
-                    <span className="label-stack">
-                      <span className="pill-label">
-                        <PillLabelContent item={item} />
-                      </span>
-                      <span className="pill-label-hover" aria-hidden="true">
-                        <PillLabelContent item={item} />
-                      </span>
-                    </span>
-                  </Link>
-                ) : (
-                  <a
-                    role="menuitem"
-                    href={item.href}
-                    className={`pill${activeHref === item.href ? " is-active" : ""}`}
-                    aria-label={item.ariaLabel || item.label}
-                    onMouseEnter={() => handleEnter(i)}
-                    onMouseLeave={() => handleLeave(i)}
-                    onClick={(e) => handleLinkClick(e, item)}
-                  >
-                    <span
-                      className="hover-circle"
-                      aria-hidden="true"
-                      ref={(el) => {
-                        circleRefs.current[i] = el;
-                      }}
-                    />
-                    <span className="label-stack">
-                      <span className="pill-label">
-                        <PillLabelContent item={item} />
-                      </span>
-                      <span className="pill-label-hover" aria-hidden="true">
-                        <PillLabelContent item={item} />
-                      </span>
-                    </span>
-                  </a>
-                )}
+                {renderPillLink(item)}
               </li>
             ))}
           </ul>
@@ -425,7 +310,7 @@ export default function PillNav({
                 <Link
                   href={item.href}
                   className={`mobile-menu-link${activeHref === item.href ? " is-active" : ""}`}
-                  onClick={(e: any) => handleLinkClick(e, item)}
+                  onClick={(e: React.MouseEvent<HTMLAnchorElement>) => handleLinkClick(e, item)}
                 >
                   <PillLabelContent item={item} />
                 </Link>

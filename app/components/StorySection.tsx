@@ -24,8 +24,8 @@ export function StorySection({ children, className, ...rest }: StorySectionProps
   return (
     <motion.section
       className={className}
-      initial={{ opacity: 0, y: 52, filter: 'blur(8px)' }}
-      whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={defaultViewport}
       transition={{ ...storytellingTransition, duration: 1.12 }}
       {...rest}

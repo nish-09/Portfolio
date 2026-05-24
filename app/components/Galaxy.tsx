@@ -98,16 +98,17 @@ vec3 StarLayer(vec2 uv) {
       float glossLocal = tri(uStarSpeed / (PERIOD * seed + 1.0));
       float flareSize = smoothstep(0.9, 1.0, size) * glossLocal;
 
-      float red = smoothstep(STAR_COLOR_CUTOFF, 1.0, Hash21(si + 1.0)) + STAR_COLOR_CUTOFF;
-      float blu = smoothstep(STAR_COLOR_CUTOFF, 1.0, Hash21(si + 3.0)) + STAR_COLOR_CUTOFF;
-      float grn = min(red, blu) * seed;
-      vec3 base = vec3(red, grn, blu);
-      
-      float hue = atan(base.g - base.r, base.b - base.r) / (2.0 * 3.14159) + 0.5;
-      hue = fract(hue + uHueShift / 360.0);
-      float sat = length(base - vec3(dot(base, vec3(0.299, 0.587, 0.114)))) * uSaturation;
-      float val = max(max(base.r, base.g), base.b);
-      base = hsv2rgb(vec3(hue, sat, val));
+      float colorPick = fract(seed * 123.456);
+      vec3 base;
+      if (colorPick < 0.60) {
+        base = vec3(1.0, 0.38 + fract(seed * 73.13) * 0.42, 0.05 + fract(seed * 91.24) * 0.12);
+      } else if (colorPick < 0.90) {
+        base = vec3(1.0, 0.92 + fract(seed * 73.13) * 0.08, 0.80 + fract(seed * 91.24) * 0.20);
+      } else {
+        base = vec3(0.55 + fract(seed * 73.13) * 0.20, 0.82 + fract(seed * 91.24) * 0.10, 1.0);
+      }
+      float gray = dot(base, vec3(0.299, 0.587, 0.114));
+      base = mix(vec3(gray), base, uSaturation);
 
       vec2 pad = vec2(tris(seed * 34.0 + uTime * uSpeed / 10.0), tris(seed * 38.0 + uTime * uSpeed / 30.0)) - 0.5;
 

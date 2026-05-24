@@ -1,5 +1,4 @@
-import ScrollyCanvas from "./components/ScrollyCanvas";
-import Overlay from "./components/Overlay";
+import VideoIntro from "./components/VideoIntro";
 import Projects from "./components/Projects";
 import Ballpit from "./components/Ballpit";
 import ConnectSection from "./components/ConnectSection";
@@ -8,7 +7,7 @@ import Galaxy from "./components/Galaxy";
 import GitHubStats from "./components/GitHubStats";
 import LeetCodeDossier from "./components/LeetCodeDossier";
 import Achievements from "./components/Achievements";
-import { StoryBlock, StorySection } from "./components/StorySection";
+import { StorySection } from "./components/StorySection";
 
 const statsSectionClassName =
   "relative w-full min-w-0 max-w-[100vw] py-12 sm:py-16 md:py-20 lg:py-24 px-[max(1rem,env(safe-area-inset-left,0px))] overflow-hidden bg-transparent";
@@ -22,8 +21,8 @@ export default function Home() {
           mouseInteraction={true}
           density={3}
           glowIntensity={0.2}
-          saturation={0}
-          hueShift={140}
+          saturation={1.0}
+          hueShift={0}
           rotationSpeed={0.05}
           repulsionStrength={0.5}
           starSpeed={0.1}
@@ -33,10 +32,7 @@ export default function Home() {
       </div>
 
       <div className="relative z-10 w-full min-w-0">
-        <StoryBlock className="relative w-full min-w-0 overflow-x-clip">
-          <ScrollyCanvas />
-          <Overlay />
-        </StoryBlock>
+        <VideoIntro />
 
         <AboutMe />
 

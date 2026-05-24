@@ -1,9 +1,16 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import LetterGlitch from './LetterGlitch';
 import { preloadGithubData } from '@/lib/github-data';
+
+const SiteReadyContext = createContext(false);
+
+/** True after the preloader exit animation finishes and the overlay is removed. */
+export function useSiteReady() {
+  return useContext(SiteReadyContext);
+}
 
 const MIN_MS = 5_000;
 
@@ -89,7 +96,7 @@ export default function SitePreloader({ children }: SitePreloaderProps) {
   const subtitle = ROTATING_LINES[lineIndex];
 
   return (
-    <>
+    <SiteReadyContext.Provider value={dismissed}>
       {children}
       {!dismissed ? (
         <div
@@ -145,6 +152,6 @@ export default function SitePreloader({ children }: SitePreloaderProps) {
           </div>
         </div>
       ) : null}
-    </>
+    </SiteReadyContext.Provider>
   );
 }
