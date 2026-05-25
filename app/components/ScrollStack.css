@@ -1,0 +1,72 @@
+.scroll-stack-scroller {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: visible;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: scroll-position;
+}
+
+.scroll-stack-scroller--window {
+  height: auto;
+  overflow: visible;
+}
+
+.scroll-stack-inner {
+  padding: 12vh 1.25rem 50rem;
+  min-height: 100vh;
+}
+
+@media (min-width: 640px) {
+  .scroll-stack-inner {
+    padding: 16vh 3rem 50rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .scroll-stack-inner {
+    padding: 18vh 5rem 50rem;
+  }
+}
+
+.scroll-stack-card {
+  transform-origin: top center;
+  will-change: transform, filter;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+  height: 20rem;
+  width: 100%;
+  margin: 30px 0;
+  padding: 3rem;
+  border-radius: 40px;
+  box-sizing: border-box;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  position: relative;
+}
+
+/* Projects: large cards — layout lives on ProjectStackCard */
+.scroll-stack-scroller.projects-scroll-stack .scroll-stack-card {
+  height: auto;
+  min-height: 0;
+  padding: 0;
+  margin: 30px 0;
+  box-shadow: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+.scroll-stack-scroller.projects-scroll-stack .scroll-stack-inner {
+  padding-bottom: 55rem;
+}
+
+.scroll-stack-end {
+  width: 100%;
+  height: 1px;
+}
