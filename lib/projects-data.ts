@@ -1,510 +1,442 @@
-import { GITHUB_USERNAME } from './github-data';
-
-export type ProjectCategory =
-  | 'Full Stack'
-  | 'Frontend'
-  | 'Backend'
-  | 'AI/ML'
-  | 'Tools'
-  | 'Experimental';
+import type { GithubRepo } from './github-data';
 
 export type ProjectStatus = 'Completed' | 'In Progress' | 'Experimental';
 
-export type ProjectFilterTab =
-  | 'All'
-  | 'Full Stack'
-  | 'Frontend'
-  | 'Backend'
-  | 'AI/ML'
-  | 'Tools'
-  | 'Experimental';
-
-export type ProjectSort = 'Featured' | 'Most Recent' | 'Most Popular';
-
 export interface PortfolioProject {
   id: string;
-  title: string;
   slug: string;
-  description: string;
-  longDescription: string;
-  challenge: string;
-  outcome: string;
-  category: ProjectCategory;
+  name: string;
   status: ProjectStatus;
+  date: string;
+  category: string;
+  description: string;
+  problem: string;
+  solution: string;
+  highlights: string[];
   tech: string[];
-  features: string[];
   image: string;
   githubUrl?: string;
   liveUrl?: string;
-  stars: number;
-  updatedAt: string;
-  featured: boolean;
-  source: 'manual' | 'github';
+  stars?: number;
 }
 
-const IGNORE_REPO = /^(test|tutorial|demo|config|\.|temp|sandbox|hello-world)/i;
-const IGNORE_NAMES = new Set(['nish-09', 'nish-09.github.io']);
+const PLACEHOLDER_IMAGES: Record<string, string> = {
+  cinehunt: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600&q=80&auto=format&fit=crop',
+  coverme: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=1600&q=80&auto=format&fit=crop',
+  'darshika-birthday-2026': 'https://images.unsplash.com/photo-1513885535751-8b923f09dc51?w=1600&q=80&auto=format&fit=crop',
+  dhobidash: 'https://images.unsplash.com/photo-1582735689369-4fe340db2bed?w=1600&q=80&auto=format&fit=crop',
+  'gnyati-website': 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1600&q=80&auto=format&fit=crop',
+  'graphical-solver-for-lpp': 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1600&q=80&auto=format&fit=crop',
+  'marvel-redesign': 'https://images.unsplash.com/photo-1635805737707-575885ab0827?w=1600&q=80&auto=format&fit=crop',
+  'memory-scrapbook': 'https://images.unsplash.com/photo-1516541196182-6bdb0516ed27?w=1600&q=80&auto=format&fit=crop',
+  minithon: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1600&q=80&auto=format&fit=crop',
+  'netflix-clone': 'https://images.unsplash.com/photo-1616530940355-da1a6067d8cb?w=1600&q=80&auto=format&fit=crop',
+  'nishit-portfolio': 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1600&q=80&auto=format&fit=crop',
+  'os-mpr': 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1600&q=80&auto=format&fit=crop',
+  passcraft: 'https://images.unsplash.com/photo-1611162617474-5b21e939e966?w=1600&q=80&auto=format&fit=crop',
+  pomodoro: 'https://images.unsplash.com/photo-1484480974693-6ca0a63fb827?w=1600&q=80&auto=format&fit=crop',
+  rangmandir: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1600&q=80&auto=format&fit=crop',
+  'rock-paper-scissors': 'https://images.unsplash.com/photo-1511512578047-dfb890d7043b?w=1600&q=80&auto=format&fit=crop',
+  'tap-n-total': 'https://images.unsplash.com/photo-1556742049-0cfed4f06a59?w=1600&q=80&auto=format&fit=crop',
+  tuduvaut: 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=1600&q=80&auto=format&fit=crop',
+  'voice-assistant': 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1600&q=80&auto=format&fit=crop',
+};
 
-function slugify(name: string) {
-  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+const DEFAULT_IMAGE =
+  'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1600&q=80&auto=format&fit=crop';
+
+export function normalizeProjectSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/['']/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
 }
 
-function placeholderImage(title: string, accent = 'a855f7') {
-  const text = encodeURIComponent(title.slice(0, 24));
-  return `https://placehold.co/1400x900/0a0a0f/${accent}?text=${text}&font=roboto`;
+export function projectHeroImage(slug: string): string {
+  return PLACEHOLDER_IMAGES[slug] ?? DEFAULT_IMAGE;
 }
 
-function inferCategory(
-  langs: string[],
-  topics: string[],
-  name: string,
-): ProjectCategory {
-  const blob = `${name} ${langs.join(' ')} ${topics.join(' ')}`.toLowerCase();
-  if (/tensorflow|pytorch|keras|ml|ai|nlp|opencv|pandas|numpy/.test(blob)) return 'AI/ML';
-  if (/next|react|vue|angular|tailwind|css|html|frontend|ui/.test(blob)) return 'Frontend';
-  if (/node|express|fastapi|flask|django|api|backend|supabase/.test(blob)) return 'Backend';
-  if (/docker|aws|devops|ci|tool|cli|script/.test(blob)) return 'Tools';
-  if (/experiment|hack|prototype|playground/.test(blob)) return 'Experimental';
-  if (/full|stack|app|platform|system/.test(blob)) return 'Full Stack';
-  return 'Full Stack';
+const IGNORE_NAME_PATTERNS = [
+  /^test/i,
+  /tutorial/i,
+  /config/i,
+  /^\.env/i,
+  /^demo-test/i,
+  /^temp-/i,
+];
+
+export function shouldIgnoreGithubRepo(repo: GithubRepo): boolean {
+  const name = repo.name.toLowerCase();
+  if (IGNORE_NAME_PATTERNS.some((p) => p.test(name))) return true;
+  if (!repo.description?.trim()) return true;
+  return false;
 }
 
-function inferStatus(name: string, description: string): ProjectStatus {
-  const blob = `${name} ${description}`.toLowerCase();
-  if (/wip|progress|building|ongoing/.test(blob)) return 'In Progress';
-  if (/experiment|hack|prototype|playground|test/.test(blob)) return 'Experimental';
-  return 'Completed';
-}
-
-const MANUAL_PROJECTS: Omit<PortfolioProject, 'id' | 'source'>[] = [
+/** Manual portfolio entries — always shown; GitHub data merges in when available. */
+export const MANUAL_PROJECTS: PortfolioProject[] = [
   {
-    title: 'Nishit Portfolio',
-    slug: 'nishit-portfolio',
-    description: 'Cinematic interactive developer portfolio with live GitHub, LeetCode, and physics-driven UI.',
-    longDescription:
-      'A premium portfolio experience built with Next.js, Lenis smooth scroll, GSAP motion, and real-time integrations for GitHub and LeetCode stats.',
-    challenge: 'Balancing cinematic motion with performance and accessibility across devices.',
-    outcome: 'A cohesive personal brand site with modular sections and live data widgets.',
-    category: 'Full Stack',
-    status: 'In Progress',
-    tech: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 'GSAP', 'Lenis'],
-    features: ['Live stats', 'Scroll-stack projects', 'Physics skills pit', 'Enquiry form'],
-    image: placeholderImage('Portfolio', 'a855f7'),
-    githubUrl: 'https://github.com/nish-09/Nishit_Portfolio',
-    liveUrl: undefined,
-    stars: 0,
-    updatedAt: new Date().toISOString(),
-    featured: true,
-  },
-  {
-    title: 'CineHunt',
+    id: 'cinehunt',
     slug: 'cinehunt',
-    description: 'Movie discovery platform with search, filters, and curated cinematic collections.',
-    longDescription: 'Discover films through smart filters, trending lists, and a polished dark UI.',
-    challenge: 'Aggregating metadata from multiple sources with fast client-side filtering.',
-    outcome: 'Smooth browsing experience with responsive layouts.',
-    category: 'Full Stack',
+    name: 'CineHunt',
     status: 'Completed',
-    tech: ['React', 'Node.js', 'REST API', 'Tailwind CSS'],
-    features: ['Search', 'Collections', 'Responsive UI'],
-    image: placeholderImage('CineHunt', 'e11d48'),
-    githubUrl: 'https://github.com/nish-09',
-    stars: 0,
-    updatedAt: '2025-01-15T00:00:00Z',
-    featured: true,
+    date: '2024',
+    category: 'Web Application',
+    description: 'A cinematic movie discovery platform with curated lists, search, and immersive browsing.',
+    problem: 'Finding quality films across fragmented streaming catalogs is slow and uninspiring.',
+    solution: 'Built a unified discovery experience with rich visuals, filters, and a premium UI.',
+    highlights: ['Curated collections', 'Fast search', 'Responsive layouts'],
+    tech: ['React', 'Next.js', 'Tailwind CSS', 'TMDB API'],
+    image: projectHeroImage('cinehunt'),
+    githubUrl: 'https://github.com/nish-09/cinehunt',
   },
   {
-    title: 'CoverMe',
+    id: 'coverme',
     slug: 'coverme',
-    description: 'Utility app for generating polished cover letters tailored to job descriptions.',
-    longDescription: 'Helps applicants craft role-specific cover letters with templates and export options.',
-    challenge: 'Structuring prompts and templates for consistent, professional output.',
-    outcome: 'Faster application workflows for users.',
+    name: 'CoverMe',
+    status: 'Completed',
+    date: '2024',
     category: 'Full Stack',
-    status: 'Completed',
-    tech: ['Next.js', 'OpenAI API', 'Tailwind CSS'],
-    features: ['Templates', 'Export PDF', 'Role matching'],
-    image: placeholderImage('CoverMe', '38bdf8'),
-    stars: 0,
-    updatedAt: '2024-11-01T00:00:00Z',
-    featured: true,
-  },
-  {
-    title: 'DhobiDash',
-    slug: 'dhobidash',
-    description: 'Laundry service dashboard for orders, pickups, and delivery tracking.',
-    longDescription: 'Operations dashboard connecting customers, riders, and shop owners.',
-    challenge: 'Real-time order state sync across roles.',
-    outcome: 'Streamlined laundry logistics for small businesses.',
-    category: 'Full Stack',
-    status: 'Completed',
-    tech: ['React', 'Firebase', 'Maps API'],
-    features: ['Order tracking', 'Role dashboards', 'Notifications'],
-    image: placeholderImage('DhobiDash', '4ade80'),
-    stars: 0,
-    updatedAt: '2024-09-01T00:00:00Z',
-    featured: false,
-  },
-  {
-    title: 'GNYATI Website',
-    slug: 'gnyati-website',
-    description: 'Marketing website for GNYATI with modern layouts and animation.',
-    longDescription: 'Brand-forward marketing site with section storytelling and contact flows.',
-    challenge: 'Translating brand guidelines into a performant web experience.',
-    outcome: 'Professional web presence for the organization.',
-    category: 'Frontend',
-    status: 'Completed',
-    tech: ['React', 'Tailwind CSS', 'Framer Motion'],
-    features: ['Landing pages', 'Contact', 'Animations'],
-    image: placeholderImage('GNYATI', 'f59e0b'),
-    stars: 0,
-    updatedAt: '2024-08-01T00:00:00Z',
-    featured: false,
-  },
-  {
-    title: 'Graphical Solver for LPP',
-    slug: 'graphical-solver-lpp',
-    description: 'Visual solver for linear programming problems with interactive graphs.',
-    longDescription: 'Plots feasible regions and optimal points for 2D LPP problems.',
-    challenge: 'Accurate geometry rendering and step-by-step explanations.',
-    outcome: 'Educational tool for operations research students.',
-    category: 'Tools',
-    status: 'Completed',
-    tech: ['Python', 'Matplotlib', 'Flask'],
-    features: ['2D plotting', 'Optimal point', 'Step solver'],
-    image: placeholderImage('LPP Solver', '06b6d4'),
-    stars: 0,
-    updatedAt: '2024-06-01T00:00:00Z',
-    featured: false,
-  },
-  {
-    title: 'Marvel Redesign',
-    slug: 'marvel-redesign',
-    description: 'UI/UX redesign concept for a Marvel streaming-style experience.',
-    longDescription: 'Cinematic browsing UI with hero banners and character-driven discovery.',
-    challenge: 'Creating immersive visuals without heavy assets.',
-    outcome: 'Award-style concept portfolio piece.',
-    category: 'Frontend',
-    status: 'Experimental',
-    tech: ['Figma', 'React', 'CSS'],
-    features: ['Hero carousel', 'Character pages', 'Dark theme'],
-    image: placeholderImage('Marvel UI', 'dc2626'),
-    stars: 0,
-    updatedAt: '2024-05-01T00:00:00Z',
-    featured: true,
-  },
-  {
-    title: 'Memory Scrapbook',
-    slug: 'memory-scrapbook',
-    description: 'Interactive digital scrapbook with drag-and-drop memories and animated reveals.',
-    longDescription: 'Hackathon project for arranging photos and notes in a playful collage UI.',
-    challenge: 'Shipping polished interactions within 24 hours.',
-    outcome: 'Best UI/UX recognition at hackathon.',
-    category: 'Frontend',
-    status: 'Completed',
-    tech: ['React', 'Tailwind CSS', 'Framer Motion'],
-    features: ['Drag layout', 'Animated cards', 'Upload'],
-    image: 'https://images.unsplash.com/photo-1516541196182-6bdb0516ed27?q=80&w=2000&auto=format&fit=crop',
-    stars: 0,
-    updatedAt: '2024-04-01T00:00:00Z',
-    featured: true,
-  },
-  {
-    title: 'Minithon',
-    slug: 'minithon',
-    description: 'Hackathon management mini-platform for teams, schedules, and submissions.',
-    longDescription: 'Coordinates mini hackathon events with judging and team dashboards.',
-    challenge: 'Lightweight admin tools with minimal setup time.',
-    outcome: 'Used for campus mini-hackathon events.',
-    category: 'Full Stack',
-    status: 'Completed',
+    description: 'Insurance and coverage companion app simplifying plan comparison and onboarding.',
+    problem: 'Users struggle to compare coverage options across providers in one place.',
+    solution: 'Delivered guided flows, plan cards, and clear comparison tables with modern UX.',
+    highlights: ['Plan comparison', 'Guided onboarding', 'Mobile-friendly'],
     tech: ['React', 'Node.js', 'MongoDB'],
-    features: ['Team signup', 'Judging', 'Schedule'],
-    image: placeholderImage('Minithon', '8b5cf6'),
-    stars: 0,
-    updatedAt: '2024-03-01T00:00:00Z',
-    featured: false,
+    image: projectHeroImage('coverme'),
+    githubUrl: 'https://github.com/nish-09/coverme',
   },
   {
-    title: 'Netflix Clone',
-    slug: 'netflix-clone',
-    description: 'Streaming UI clone with rows, hover previews, and responsive layout.',
-    longDescription: 'Front-end clone focusing on layout fidelity and smooth hover states.',
-    challenge: 'Matching complex grid and carousel patterns.',
-    outcome: 'Strong front-end portfolio demonstration.',
-    category: 'Frontend',
-    status: 'Completed',
-    tech: ['React', 'TMDB API', 'CSS'],
-    features: ['Rows', 'Hero banner', 'Hover preview'],
-    image: placeholderImage('Netflix Clone', 'e50914'),
-    stars: 0,
-    updatedAt: '2024-02-01T00:00:00Z',
-    featured: true,
-  },
-  {
-    title: 'OS MPR',
-    slug: 'os-mpr',
-    description: 'Operating systems coursework project exploring process scheduling concepts.',
-    longDescription: 'Simulations and visualizations for scheduling algorithms.',
-    challenge: 'Making abstract OS concepts tangible through visuals.',
-    outcome: 'Clear educational simulations for coursework.',
-    category: 'Tools',
-    status: 'Completed',
-    tech: ['C', 'Python', 'CLI'],
-    features: ['Scheduling viz', 'Reports', 'Benchmarks'],
-    image: placeholderImage('OS MPR', '64748b'),
-    stars: 0,
-    updatedAt: '2023-12-01T00:00:00Z',
-    featured: false,
-  },
-  {
-    title: 'PassCraft',
-    slug: 'passcraft',
-    description: 'Digital pass and ticket generator with QR codes and branding.',
-    longDescription: 'Creates branded event passes with export and verification flows.',
-    challenge: 'QR generation and printable layouts.',
-    outcome: 'Used for small event ticketing.',
-    category: 'Full Stack',
-    status: 'Completed',
-    tech: ['React', 'Node.js', 'QR'],
-    features: ['QR passes', 'Branding', 'Export'],
-    image: placeholderImage('PassCraft', '14b8a6'),
-    stars: 0,
-    updatedAt: '2023-11-01T00:00:00Z',
-    featured: false,
-  },
-  {
-    title: 'Pomodoro',
-    slug: 'pomodoro',
-    description: 'Focus timer with sessions, stats, and ambient themes.',
-    longDescription: 'Productivity timer with customizable work/break cycles.',
-    challenge: 'Persistent stats and notification timing accuracy.',
-    outcome: 'Daily driver for focused study sessions.',
-    category: 'Frontend',
-    status: 'Completed',
-    tech: ['JavaScript', 'CSS', 'LocalStorage'],
-    features: ['Timers', 'Stats', 'Themes'],
-    image: placeholderImage('Pomodoro', 'f97316'),
-    stars: 0,
-    updatedAt: '2023-10-01T00:00:00Z',
-    featured: false,
-  },
-  {
-    title: 'RangMandir',
-    slug: 'rangmandir',
-    description: 'Cultural event platform highlighting performances and venue booking.',
-    longDescription: 'Showcases artists and events with rich media galleries.',
-    challenge: 'Media-heavy pages with fast load times.',
-    outcome: 'Vibrant event discovery for local culture.',
-    category: 'Full Stack',
-    status: 'Completed',
-    tech: ['React', 'Firebase', 'Tailwind CSS'],
-    features: ['Events', 'Gallery', 'Booking'],
-    image: placeholderImage('RangMandir', 'ec4899'),
-    stars: 0,
-    updatedAt: '2023-09-01T00:00:00Z',
-    featured: false,
-  },
-  {
-    title: 'Rock Paper Scissors',
-    slug: 'rock-paper-scissors',
-    description: 'Animated RPS game with score tracking and playful micro-interactions.',
-    longDescription: 'Classic game with motion-rich feedback and mobile-friendly controls.',
-    challenge: 'Snappy animations without layout shift.',
-    outcome: 'Fun arcade-style browser game.',
-    category: 'Frontend',
-    status: 'Completed',
-    tech: ['JavaScript', 'CSS', 'HTML'],
-    features: ['Scoreboard', 'Animations', 'Mobile UI'],
-    image: placeholderImage('RPS', '22c55e'),
-    stars: 0,
-    updatedAt: '2023-08-01T00:00:00Z',
-    featured: false,
-  },
-  {
-    title: "Tap n' Total",
-    slug: 'tap-n-total',
-    description: 'Quick bill splitting and tip calculator for groups.',
-    longDescription: 'Split bills fairly with tax and tip rules per person.',
-    challenge: 'Clear UX for fast entry in social settings.',
-    outcome: 'Handy utility for dining groups.',
-    category: 'Tools',
-    status: 'Completed',
-    tech: ['React', 'Tailwind CSS'],
-    features: ['Split bill', 'Tip calc', 'Share'],
-    image: placeholderImage('Tap n Total', '0ea5e9'),
-    stars: 0,
-    updatedAt: '2023-07-01T00:00:00Z',
-    featured: false,
-  },
-  {
-    title: 'TuduVaut',
-    slug: 'tuduvaut',
-    description: 'Task vault with categories, priorities, and drag reordering.',
-    longDescription: 'Todo system with vaults, filters, and keyboard-friendly flows.',
-    challenge: 'Smooth list reordering with persisted state.',
-    outcome: 'Personal productivity workflow tool.',
-    category: 'Full Stack',
-    status: 'In Progress',
-    tech: ['Next.js', 'Supabase', 'Tailwind CSS'],
-    features: ['Vaults', 'Drag sort', 'Filters'],
-    image: placeholderImage('TuduVaut', '6366f1'),
-    stars: 0,
-    updatedAt: '2025-02-01T00:00:00Z',
-    featured: false,
-  },
-  {
-    title: 'Voice Assistant',
-    slug: 'voice-assistant',
-    description: 'Voice-controlled assistant prototype with speech recognition and commands.',
-    longDescription: 'Experimental assistant wiring browser speech APIs to action handlers.',
-    challenge: 'Latency and accuracy of speech recognition in browser.',
-    outcome: 'Proof-of-concept for hands-free commands.',
-    category: 'AI/ML',
-    status: 'Experimental',
-    tech: ['Python', 'SpeechRecognition', 'Flask'],
-    features: ['Voice commands', 'Intent routing', 'Web UI'],
-    image: placeholderImage('Voice AI', '10b981'),
-    stars: 0,
-    updatedAt: '2024-01-01T00:00:00Z',
-    featured: true,
-  },
-  {
-    title: 'Darshika Birthday 2026',
+    id: 'darshika-birthday-2026',
     slug: 'darshika-birthday-2026',
-    description: 'Personalized interactive birthday experience with animations and messages.',
-    longDescription: 'A bespoke celebratory microsite with playful motion and music.',
-    challenge: 'Emotional storytelling through motion design.',
-    outcome: 'Memorable personalized gift experience.',
-    category: 'Experimental',
+    name: 'Darshika Birthday 2026',
+    status: 'Experimental',
+    date: '2026',
+    category: 'Interactive Experience',
+    description: 'A personalized celebratory microsite with animations, memories, and interactive surprises.',
+    problem: 'Create a memorable one-off experience without a generic greeting card template.',
+    solution: 'Crafted a custom interactive story with motion design and playful interactions.',
+    highlights: ['Custom animations', 'Personal narrative', 'Shareable link'],
+    tech: ['React', 'Framer Motion', 'Tailwind CSS'],
+    image: projectHeroImage('darshika-birthday-2026'),
+  },
+  {
+    id: 'dhobidash',
+    slug: 'dhobidash',
+    name: 'DhobiDash',
     status: 'Completed',
-    tech: ['HTML', 'CSS', 'JavaScript', 'GSAP'],
-    features: ['Animations', 'Music', 'Messages'],
-    image: placeholderImage('Birthday 2026', 'f472b6'),
-    stars: 0,
-    updatedAt: '2026-01-01T00:00:00Z',
-    featured: false,
+    date: '2024',
+    category: 'Web Application',
+    description: 'Laundry service dashboard for orders, pickups, and delivery tracking.',
+    problem: 'Local laundry businesses lacked a simple digital order and status system.',
+    solution: 'Shipped an admin + customer flow with order timelines and notifications.',
+    highlights: ['Order tracking', 'Admin dashboard', 'Status updates'],
+    tech: ['React', 'Firebase', 'Tailwind CSS'],
+    image: projectHeroImage('dhobidash'),
+    githubUrl: 'https://github.com/nish-09/DhobiDash',
+  },
+  {
+    id: 'gnyati-website',
+    slug: 'gnyati-website',
+    name: 'Gnyati Website',
+    status: 'Completed',
+    date: '2023',
+    category: 'Business Website',
+    description: 'Corporate marketing site with service pages, contact flows, and brand storytelling.',
+    problem: 'The brand needed a credible web presence that converts visitors into leads.',
+    solution: 'Designed and developed a polished multi-page site with SEO-friendly structure.',
+    highlights: ['Brand storytelling', 'Lead capture', 'SEO structure'],
+    tech: ['HTML5', 'CSS3', 'JavaScript', 'WordPress'],
+    image: projectHeroImage('gnyati-website'),
+    githubUrl: 'https://github.com/nish-09/gnyati-website',
+  },
+  {
+    id: 'graphical-solver-for-lpp',
+    slug: 'graphical-solver-for-lpp',
+    name: 'Graphical Solver for LPP',
+    status: 'Experimental',
+    date: '2023',
+    category: 'Academic Tool',
+    description: 'Visual linear programming problem solver with feasible region plotting.',
+    problem: 'Students needed an intuitive way to visualize constraints and optimal points.',
+    solution: 'Implemented interactive graphs, constraint input, and step-by-step visualization.',
+    highlights: ['2D plotting', 'Constraint editor', 'Optimal point highlight'],
+    tech: ['Python', 'Matplotlib', 'Flask'],
+    image: projectHeroImage('graphical-solver-for-lpp'),
+    githubUrl: 'https://github.com/nish-09/Graphical-Solver-for-LPP',
+  },
+  {
+    id: 'marvel-redesign',
+    slug: 'marvel-redesign',
+    name: 'Marvel Redesign',
+    status: 'Completed',
+    date: '2024',
+    category: 'UI / UX',
+    description: 'Concept redesign of a Marvel entertainment experience with cinematic layouts.',
+    problem: 'Explore how franchise branding could feel more immersive on the web.',
+    solution: 'Produced high-fidelity screens, motion concepts, and component-driven UI.',
+    highlights: ['Cinematic UI', 'Character showcases', 'Design system'],
+    tech: ['Figma', 'React', 'Tailwind CSS'],
+    image: projectHeroImage('marvel-redesign'),
+    githubUrl: 'https://github.com/nish-09/Marvel-Redesign',
+  },
+  {
+    id: 'memory-scrapbook',
+    slug: 'memory-scrapbook',
+    name: 'Memory Scrapbook',
+    status: 'Completed',
+    date: '2024',
+    category: 'Hackathon Project',
+    description: 'Interactive digital scrapbook for arranging photos, notes, and animated memory cards.',
+    problem: 'Static albums fail to capture the playful feeling of flipping through memories.',
+    solution: 'Built drag-and-drop layouts with motion reveals and shareable collections.',
+    highlights: ['Drag-and-drop', 'Animated reveals', 'Best UI/UX award'],
+    tech: ['React', 'Tailwind CSS', 'Framer Motion'],
+    image: projectHeroImage('memory-scrapbook'),
+    githubUrl: 'https://github.com/nish-09/Memory-Scrapbook',
+  },
+  {
+    id: 'minithon',
+    slug: 'minithon',
+    name: 'Minithon',
+    status: 'Completed',
+    date: '2024',
+    category: 'Event Platform',
+    description: 'Hackathon event hub with schedules, team registration, and judging workflows.',
+    problem: 'Organizers needed one place to manage participants and timelines during the event.',
+    solution: 'Created registration, schedule views, and admin tooling for fast-paced hackathons.',
+    highlights: ['Registration', 'Live schedule', 'Admin tools'],
+    tech: ['React', 'Node.js', 'MongoDB'],
+    image: projectHeroImage('minithon'),
+    githubUrl: 'https://github.com/nish-09/Minithon',
+  },
+  {
+    id: 'netflix-clone',
+    slug: 'netflix-clone',
+    name: 'Netflix Clone',
+    status: 'Completed',
+    date: '2023',
+    category: 'Streaming UI',
+    description: 'Netflix-inspired browsing UI with rows, hero banners, and responsive video cards.',
+    problem: 'Practice building a production-grade streaming interface with real API data.',
+    solution: 'Recreated core browsing patterns with TMDB integration and smooth interactions.',
+    highlights: ['Hero banner', 'Category rows', 'TMDB integration'],
+    tech: ['React', 'Tailwind CSS', 'TMDB API'],
+    image: projectHeroImage('netflix-clone'),
+    githubUrl: 'https://github.com/nish-09/Netflix-Clone',
+  },
+  {
+    id: 'nishit-portfolio',
+    slug: 'nishit-portfolio',
+    name: 'Nishit Portfolio',
+    status: 'In Progress',
+    date: '2026',
+    category: 'Portfolio',
+    description: 'This cinematic developer portfolio with physics skills, live stats, and project storytelling.',
+    problem: 'Showcase full-stack ability with motion, interactivity, and real project depth.',
+    solution: 'Engineered a premium experience using Next.js, Lenis, Matter.js, and live APIs.',
+    highlights: ['Cinematic hero', 'Live GitHub stats', 'Interactive skills'],
+    tech: ['Next.js', 'React', 'Tailwind CSS', 'Framer Motion', 'Lenis'],
+    image: projectHeroImage('nishit-portfolio'),
+    githubUrl: 'https://github.com/nish-09/Nishit_Portfolio',
+    liveUrl: 'https://nishitparikh.dev',
+  },
+  {
+    id: 'os-mpr',
+    slug: 'os-mpr',
+    name: 'OS MPR',
+    status: 'Experimental',
+    date: '2023',
+    category: 'Systems',
+    description: 'Operating systems coursework project exploring process management concepts.',
+    problem: 'Demonstrate scheduling and resource management in a controlled environment.',
+    solution: 'Implemented simulations and reports for OS scheduling algorithms.',
+    highlights: ['Process scheduling', 'Simulation', 'Documentation'],
+    tech: ['C', 'C++', 'Linux'],
+    image: projectHeroImage('os-mpr'),
+    githubUrl: 'https://github.com/nish-09/OS-MPR',
+  },
+  {
+    id: 'passcraft',
+    slug: 'passcraft',
+    name: 'PassCraft',
+    status: 'Completed',
+    date: '2024',
+    category: 'Security Tool',
+    description: 'Password generator and vault-style utility with strength analysis.',
+    problem: 'Users need memorable yet secure passwords without compromising safety.',
+    solution: 'Built generation rules, strength meters, and copy-safe UX patterns.',
+    highlights: ['Strength analysis', 'Custom rules', 'Secure UX'],
+    tech: ['JavaScript', 'React', 'Web Crypto API'],
+    image: projectHeroImage('passcraft'),
+    githubUrl: 'https://github.com/nish-09/PassCraft',
+  },
+  {
+    id: 'pomodoro',
+    slug: 'pomodoro',
+    name: 'Pomodoro',
+    status: 'Completed',
+    date: '2023',
+    category: 'Productivity',
+    description: 'Focus timer app with sessions, breaks, and session history tracking.',
+    problem: 'Developers need a distraction-free timer that fits a dark premium aesthetic.',
+    solution: 'Shipped interval timers, notifications, and persistent session stats.',
+    highlights: ['Focus intervals', 'Session history', 'Minimal UI'],
+    tech: ['React', 'TypeScript', 'Tailwind CSS'],
+    image: projectHeroImage('pomodoro'),
+    githubUrl: 'https://github.com/nish-09/Pomodoro',
+  },
+  {
+    id: 'rangmandir',
+    slug: 'rangmandir',
+    name: 'RangMandir',
+    status: 'Completed',
+    date: '2024',
+    category: 'Cultural Platform',
+    description: 'Platform celebrating art and culture with events, galleries, and community features.',
+    problem: 'Cultural organizations lacked a vibrant digital home for events and artists.',
+    solution: 'Designed rich galleries, event listings, and community submission flows.',
+    highlights: ['Event listings', 'Art galleries', 'Community posts'],
+    tech: ['React', 'Next.js', 'Supabase'],
+    image: projectHeroImage('rangmandir'),
+    githubUrl: 'https://github.com/nish-09/RangMandir',
+  },
+  {
+    id: 'rock-paper-scissors',
+    slug: 'rock-paper-scissors',
+    name: 'Rock Paper Scissors',
+    status: 'Completed',
+    date: '2023',
+    category: 'Game',
+    description: 'Classic rock-paper-scissors game with score tracking and animated outcomes.',
+    problem: 'Build a polished mini-game demonstrating state management and motion.',
+    solution: 'Added animated throws, scoreboard, and responsive touch-friendly controls.',
+    highlights: ['Score tracking', 'Animations', 'Mobile play'],
+    tech: ['JavaScript', 'HTML5', 'CSS3'],
+    image: projectHeroImage('rock-paper-scissors'),
+    githubUrl: 'https://github.com/nish-09/Rock-Paper-Scissors',
+  },
+  {
+    id: 'tap-n-total',
+    slug: 'tap-n-total',
+    name: "Tap n' Total",
+    status: 'Completed',
+    date: '2024',
+    category: 'Utility App',
+    description: 'Quick bill splitting and tip calculator for groups and restaurants.',
+    problem: 'Splitting bills fairly in groups is awkward without a fast shared tool.',
+    solution: 'Built per-person breakdowns, tip presets, and shareable summaries.',
+    highlights: ['Bill split', 'Tip presets', 'Share summary'],
+    tech: ['React', 'TypeScript', 'Tailwind CSS'],
+    image: projectHeroImage('tap-n-total'),
+    githubUrl: 'https://github.com/nish-09/Tap-n-Total',
+  },
+  {
+    id: 'tuduvaut',
+    slug: 'tuduvaut',
+    name: 'TuduVaut',
+    status: 'In Progress',
+    date: '2025',
+    category: 'Productivity',
+    description: 'Task and habit tracker with vault-style organization and progress insights.',
+    problem: 'Todo apps often feel generic and fail to motivate consistent habits.',
+    solution: 'Designed categorized tasks, streaks, and a premium dark interface.',
+    highlights: ['Habit streaks', 'Categories', 'Progress insights'],
+    tech: ['React', 'Next.js', 'Supabase'],
+    image: projectHeroImage('tuduvaut'),
+    githubUrl: 'https://github.com/nish-09/TuduVaut',
+  },
+  {
+    id: 'voice-assistant',
+    slug: 'voice-assistant',
+    name: 'Voice Assistant',
+    status: 'Experimental',
+    date: '2024',
+    category: 'AI / ML',
+    description: 'Voice-controlled assistant prototype with speech recognition and command routing.',
+    problem: 'Explore hands-free interaction for common developer and productivity commands.',
+    solution: 'Integrated speech APIs with intent parsing and feedback loops.',
+    highlights: ['Speech input', 'Intent routing', 'Voice feedback'],
+    tech: ['Python', 'JavaScript', 'Web Speech API'],
+    image: projectHeroImage('voice-assistant'),
+    githubUrl: 'https://github.com/nish-09/voice-assistant',
   },
 ];
 
-function manualToPortfolio(m: Omit<PortfolioProject, 'id' | 'source'>): PortfolioProject {
-  return {
-    ...m,
-    id: `manual-${m.slug}`,
-    source: 'manual',
-  };
-}
+export function mergeWithGithubRepos(repos: GithubRepo[]): PortfolioProject[] {
+  const bySlug = new Map<string, PortfolioProject>();
 
-export async function fetchGithubProjects(): Promise<PortfolioProject[]> {
-  try {
-    const res = await fetch(
-      `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=100&type=public`,
-      { next: { revalidate: 3600 } },
-    );
-    const data = await res.json();
-    if (!Array.isArray(data)) return [];
-
-    return data
-      .filter((repo: { name: string; description: string | null }) => {
-        if (IGNORE_NAMES.has(repo.name)) return false;
-        if (IGNORE_REPO.test(repo.name)) return false;
-        if (!repo.description?.trim()) return false;
-        return true;
-      })
-      .map(
-        (repo: {
-          id: number;
-          name: string;
-          description: string | null;
-          html_url: string;
-          stargazers_count: number;
-          language: string | null;
-          updated_at: string;
-          topics?: string[];
-        }) => {
-          const langs = repo.language ? [repo.language] : [];
-          const topics = repo.topics ?? [];
-          const title = repo.name
-            .replace(/-/g, ' ')
-            .replace(/\b\w/g, (c: string) => c.toUpperCase());
-          return {
-            id: `gh-${repo.id}`,
-            title,
-            slug: slugify(repo.name),
-            description: repo.description ?? '',
-            longDescription: repo.description ?? '',
-            challenge: 'Open-source iteration, documentation, and maintainable structure.',
-            outcome: `Public repository with ${repo.stargazers_count} stars on GitHub.`,
-            category: inferCategory(langs, topics, repo.name),
-            status: inferStatus(repo.name, repo.description ?? ''),
-            tech: [...new Set([...langs, ...topics.map((t) => t.replace(/-/g, ' '))])].slice(0, 8),
-            features: topics.length ? topics.slice(0, 4) : ['Open source', 'GitHub'],
-            image: placeholderImage(title, '7c3aed'),
-            githubUrl: repo.html_url,
-            liveUrl: undefined,
-            stars: repo.stargazers_count,
-            updatedAt: repo.updated_at,
-            featured: repo.stargazers_count >= 2,
-            source: 'github' as const,
-          };
-        },
-      );
-  } catch {
-    return [];
+  for (const manual of MANUAL_PROJECTS) {
+    bySlug.set(manual.slug, { ...manual });
   }
-}
 
-export async function loadAllProjects(): Promise<PortfolioProject[]> {
-  const manual = MANUAL_PROJECTS.map(manualToPortfolio);
-  const github = await fetchGithubProjects();
-  const manualSlugs = new Set(manual.map((p) => p.slug));
+  for (const repo of repos) {
+    if (shouldIgnoreGithubRepo(repo)) continue;
+    const slug = normalizeProjectSlug(repo.name);
+    const year = new Date(repo.updated_at).getFullYear().toString();
+    const existing = bySlug.get(slug);
 
-  const merged = [
-    ...manual,
-    ...github.filter((g) => !manualSlugs.has(g.slug)),
-  ];
+    if (existing) {
+      bySlug.set(slug, {
+        ...existing,
+        stars: repo.stargazers_count,
+        githubUrl: repo.html_url,
+        tech:
+          existing.tech.length > 0
+            ? existing.tech
+            : [repo.language, ...repo.topics].filter(Boolean) as string[],
+      });
+      continue;
+    }
 
-  return merged.sort((a, b) => {
-    if (a.featured !== b.featured) return a.featured ? -1 : 1;
-    return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+    bySlug.set(slug, {
+      id: slug,
+      slug,
+      name: repo.name.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+      status: 'Completed',
+      date: year,
+      category: repo.topics[0] ?? 'Open Source',
+      description: repo.description ?? 'Open-source project from GitHub.',
+      problem: 'Ship a maintainable solution for a real-world use case.',
+      solution: repo.description ?? 'Implemented core features and published the repository.',
+      highlights: repo.topics.slice(0, 3).length
+        ? repo.topics.slice(0, 3)
+        : ['Open source', 'Documented codebase'],
+      tech: [repo.language, ...repo.topics].filter(Boolean) as string[],
+      image: projectHeroImage(slug),
+      githubUrl: repo.html_url,
+      stars: repo.stargazers_count,
+    });
+  }
+
+  const statusOrder: Record<ProjectStatus, number> = {
+    'In Progress': 0,
+    Completed: 1,
+    Experimental: 2,
+  };
+
+  return Array.from(bySlug.values()).sort((a, b) => {
+    const statusDiff = statusOrder[a.status] - statusOrder[b.status];
+    if (statusDiff !== 0) return statusDiff;
+    return (b.stars ?? 0) - (a.stars ?? 0);
   });
 }
 
-export function filterProjects(
-  projects: PortfolioProject[],
-  tab: ProjectFilterTab,
-): PortfolioProject[] {
-  if (tab === 'All') return projects;
-  return projects.filter((p) => p.category === tab);
+/** Shape used by CircularGallery */
+export function toGalleryItem(project: PortfolioProject) {
+  const links: { label: string; url: string }[] = [];
+  if (project.liveUrl) links.push({ label: 'Live Demo', url: project.liveUrl });
+  if (project.githubUrl) links.push({ label: 'GitHub', url: project.githubUrl });
+
+  return {
+    project,
+    text: project.name,
+    image: project.image,
+    category: project.category,
+    year: project.date,
+    description: project.description,
+    challenge: project.problem,
+    outcome: project.solution,
+    tech: project.tech,
+    links,
+  };
 }
-
-export function sortProjects(
-  projects: PortfolioProject[],
-  sort: ProjectSort,
-): PortfolioProject[] {
-  const list = [...projects];
-  if (sort === 'Featured') {
-    return list.sort((a, b) => {
-      if (a.featured !== b.featured) return a.featured ? -1 : 1;
-      return b.stars - a.stars;
-    });
-  }
-  if (sort === 'Most Popular') {
-    return list.sort((a, b) => b.stars - a.stars);
-  }
-  return list.sort(
-    (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
-  );
-}
-
-export const PROJECT_FILTER_TABS: ProjectFilterTab[] = [
-  'All',
-  'Full Stack',
-  'Frontend',
-  'Backend',
-  'AI/ML',
-  'Tools',
-  'Experimental',
-];
-
-export const PROJECT_SORT_OPTIONS: ProjectSort[] = ['Featured', 'Most Recent', 'Most Popular'];

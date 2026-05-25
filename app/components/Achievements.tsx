@@ -187,7 +187,7 @@ export default function Achievements() {
               className="fixed inset-0 z-[111] flex items-center justify-center p-4 sm:p-8 pointer-events-none"
             >
               <div
-                className="relative pointer-events-auto max-w-[min(96vw,56rem)] max-h-[min(88dvh,88svh)] w-full"
+                className="relative pointer-events-auto max-w-[min(96vw,56rem)] max-h-[min(88dvh,88svh)] w-full rounded-xl border border-white/35 shadow-[0_0_35px_rgba(255,255,255,0.15)] bg-black/60 p-1"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="relative">

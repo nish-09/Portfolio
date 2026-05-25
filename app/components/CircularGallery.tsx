@@ -157,7 +157,13 @@ class Media {
           float d = roundedBoxSDF(vUv - 0.5, vec2(0.5 - uBorderRadius), uBorderRadius);
           float edgeSmooth = 0.002;
           float alpha = 1.0 - smoothstep(-edgeSmooth, edgeSmooth, d);
-          gl_FragColor = vec4(color.rgb, alpha);
+          
+          // Glowing border effect
+          float glow = 1.0 - smoothstep(0.0, 0.02, -d);
+          vec3 glowColor = vec3(1.0, 1.0, 1.0); // White glow
+          vec3 finalColor = mix(color.rgb, glowColor, glow * 0.5);
+          
+          gl_FragColor = vec4(finalColor, alpha);
         }
       `,
       uniforms: {
@@ -300,6 +306,7 @@ class App {
   }
   onTouchMove(e: any) {
     if (!this.isDown) return;
+    if (e.cancelable) e.preventDefault();
     this.lastInteraction = Date.now();
     const x = e.touches ? e.touches[0].clientX : e.clientX;
     const distance = (this.start - x) * (this.scrollSpeed * 0.025);
@@ -314,10 +321,15 @@ class App {
     const isInside = this.container.contains(e.target);
 
     if (isInside && moved < 8 && this.onItemClick && this.medias.length > 0) {
+      const rect = this.container.getBoundingClientRect();
+      const xInside = endX - rect.left;
+      const ndcX = (xInside / rect.width) * 2 - 1;
+      const clickX = ndcX * (this.viewport.width / 2);
+
       let closest = this.medias[0];
-      let closestDist = Math.abs(closest.plane.position.x);
+      let closestDist = Math.abs(closest.plane.position.x - clickX);
       for (const m of this.medias) {
-        const d = Math.abs(m.plane.position.x);
+        const d = Math.abs(m.plane.position.x - clickX);
         if (d < closestDist) { closestDist = d; closest = m; }
       }
       const originalLen = this.mediasImages.length / 2;
@@ -327,6 +339,7 @@ class App {
     this.onCheck();
   }
   onWheel(e: any) {
+    if (e.cancelable) e.preventDefault();
     this.lastInteraction = Date.now();
     const delta = e.deltaY || e.wheelDelta || e.detail;
     this.scroll.target += (delta > 0 ? this.scrollSpeed : -this.scrollSpeed) * 0.2;
@@ -369,13 +382,13 @@ class App {
     this.boundOnTouchMove = this.onTouchMove.bind(this);
     this.boundOnTouchUp = this.onTouchUp.bind(this);
     window.addEventListener('resize', this.boundOnResize);
-    this.container.addEventListener('mousewheel', this.boundOnWheel);
-    this.container.addEventListener('wheel', this.boundOnWheel);
+    this.container.addEventListener('mousewheel', this.boundOnWheel, { passive: false });
+    this.container.addEventListener('wheel', this.boundOnWheel, { passive: false });
     this.container.addEventListener('mousedown', this.boundOnTouchDown);
-    this.container.addEventListener('mousemove', this.boundOnTouchMove);
+    this.container.addEventListener('mousemove', this.boundOnTouchMove, { passive: false });
     this.container.addEventListener('mouseup', this.boundOnTouchUp);
-    this.container.addEventListener('touchstart', this.boundOnTouchDown);
-    this.container.addEventListener('touchmove', this.boundOnTouchMove);
+    this.container.addEventListener('touchstart', this.boundOnTouchDown, { passive: false });
+    this.container.addEventListener('touchmove', this.boundOnTouchMove, { passive: false });
     this.container.addEventListener('touchend', this.boundOnTouchUp);
   }
   destroy() {

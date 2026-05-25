@@ -30,16 +30,18 @@ type SitePreloaderProps = {
 };
 
 export default function SitePreloader({ children }: SitePreloaderProps) {
-  const startRef = useRef(typeof performance !== 'undefined' ? performance.now() : Date.now());
+  const startRef = useRef(0);
   const [pageLoaded, setPageLoaded] = useState(false);
   const [dismissed, setDismissed] = useState(false);
   const [exiting, setExiting] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [minTimeElapsed, setMinTimeElapsed] = useState(false);
   const [lineIndex, setLineIndex] = useState(0);
 
   useEffect(() => {
     preloadGithubData();
     fetch("/api/leetcode").catch(() => undefined);
+    startRef.current = typeof performance !== 'undefined' ? performance.now() : Date.now();
   }, []);
 
   useEffect(() => {
@@ -65,6 +67,7 @@ export default function SitePreloader({ children }: SitePreloaderProps) {
     if (dismissed) return;
     const tick = () => {
       const elapsed = performance.now() - startRef.current;
+      setMinTimeElapsed(elapsed >= MIN_MS);
       const timeRatio = Math.min(1, elapsed / MIN_MS);
       let p = Math.min(99, timeRatio * 100);
       if (pageLoaded) p = 100;
@@ -92,7 +95,6 @@ export default function SitePreloader({ children }: SitePreloaderProps) {
     };
   }, [dismissed]);
 
-  const minTimeElapsed = performance.now() - startRef.current >= MIN_MS;
   const subtitle = ROTATING_LINES[lineIndex];
 
   return (

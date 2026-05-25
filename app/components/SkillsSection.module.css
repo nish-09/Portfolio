@@ -1,0 +1,172 @@
+.section {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  padding: 4.25rem 0 0;
+  isolation: isolate;
+  min-height: min(100dvh, 900px);
+}
+
+.header {
+  margin-bottom: 1.25rem;
+  padding-top: 0.5rem;
+}
+
+.title {
+  font-family: var(--font-frijole), "Frijole", serif;
+  line-height: 0.95;
+  text-shadow: 0 4px 32px rgba(0, 0, 0, 0.6);
+}
+
+.subtitle {
+  margin-top: 0.85rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.02em;
+}
+
+@media (min-width: 640px) {
+  .subtitle {
+    font-size: 0.9rem;
+  }
+}
+
+.filters {
+  margin-bottom: 0.75rem;
+}
+
+.countLabel {
+  margin-top: 0.65rem;
+  text-align: center;
+  font-size: 0.65rem;
+  font-family: ui-monospace, monospace;
+  color: rgba(255, 255, 255, 0.32);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.gridBg {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 90% 80% at 50% 45%, black 15%, transparent 72%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 45%, black 15%, transparent 72%);
+  animation: gridDrift 28s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes gridDrift {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(48px);
+  }
+}
+
+.particles {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(2px 2px at 18% 28%, rgba(168, 85, 247, 0.45), transparent),
+    radial-gradient(2px 2px at 72% 62%, rgba(56, 189, 248, 0.35), transparent),
+    radial-gradient(1px 1px at 55% 18%, rgba(255, 255, 255, 0.3), transparent);
+  background-size: 200% 200%;
+  animation: particleFloat 20s ease-in-out infinite alternate;
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+@keyframes particleFloat {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+.cursorGlow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    700px circle at 50% 55%,
+    rgba(168, 85, 247, 0.07),
+    transparent 65%
+  );
+  pointer-events: none;
+}
+
+.ambientTop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 35%;
+  background: linear-gradient(to bottom, rgba(168, 85, 247, 0.05), transparent);
+  pointer-events: none;
+}
+
+.ambientBottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 45%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
+  pointer-events: none;
+}
+
+.pitWrap {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  flex: 1;
+  min-height: min(58dvh, 560px);
+  height: min(62dvh, 620px);
+  max-width: 100vw;
+  margin: 0 auto;
+}
+
+.pitFloor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 28%;
+  background: linear-gradient(to top, rgba(168, 85, 247, 0.06), transparent);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.pitCanvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding-top: 5rem;
+    min-height: 100dvh;
+  }
+
+  .header {
+    margin-bottom: 1.5rem;
+  }
+
+  .pitWrap {
+    min-height: 520px;
+    height: min(68dvh, 680px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .pitWrap {
+    height: min(72dvh, 720px);
+  }
+}

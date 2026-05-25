@@ -9,20 +9,10 @@ export type SkillCategory =
   | 'Languages';
 
 export interface SkillItem {
-  name: string;
+  label: string;
   category: Exclude<SkillCategory, 'All'>;
   color: string;
 }
-
-const CATEGORY_COLORS: Record<Exclude<SkillCategory, 'All'>, string> = {
-  Frontend: '#61DAFB',
-  Backend: '#68D391',
-  Database: '#F6AD55',
-  'AI / ML': '#B794F4',
-  'Cloud / DevOps': '#63B3ED',
-  Tools: '#F687B3',
-  Languages: '#FBD38D',
-};
 
 export const SKILL_CATEGORIES: SkillCategory[] = [
   'All',
@@ -35,71 +25,61 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
   'Languages',
 ];
 
-const RAW_SKILLS: Record<Exclude<SkillCategory, 'All'>, string[]> = {
-  Frontend: [
-    'HTML5',
-    'CSS3',
-    'JavaScript',
-    'TypeScript',
-    'React',
-    'Next.js',
-    'Tailwind CSS',
-    'Vite',
-    'Framer Motion',
-    'React Router',
-    'React Query',
-    'Styled Components',
-    'Sass',
-    'AngularJS',
-    'Three.js',
-    'React Native',
-  ],
-  Backend: [
-    'Node.js',
-    'FastAPI',
-    'Flask',
-    'JWT',
-    'Firebase',
-    'Supabase',
-    'WordPress',
-  ],
-  Database: ['MongoDB', 'MySQL', 'Firebase', 'Supabase'],
-  'AI / ML': [
-    'NumPy',
-    'Pandas',
-    'Matplotlib',
-    'PyTorch',
-    'TensorFlow',
-    'Keras',
-  ],
-  'Cloud / DevOps': ['Docker', 'AWS', 'Render', 'Vercel'],
-  Languages: ['Python', 'C', 'C++'],
-  Tools: ['Git', 'GitHub', 'Figma', 'Canva', 'Arduino', 'Twilio'],
-};
+export const ALL_SKILLS: SkillItem[] = [
+  { label: 'HTML5', category: 'Frontend', color: '#E34F26' },
+  { label: 'CSS3', category: 'Frontend', color: '#1572B6' },
+  { label: 'JavaScript', category: 'Frontend', color: '#F7DF1E' },
+  { label: 'TypeScript', category: 'Frontend', color: '#3178C6' },
+  { label: 'React', category: 'Frontend', color: '#61DAFB' },
+  { label: 'Next.js', category: 'Frontend', color: '#ffffff' },
+  { label: 'Tailwind CSS', category: 'Frontend', color: '#38BDF8' },
+  { label: 'Vite', category: 'Frontend', color: '#646CFF' },
+  { label: 'Framer Motion', category: 'Frontend', color: '#a855f7' },
+  { label: 'React Router', category: 'Frontend', color: '#CA4245' },
+  { label: 'React Query', category: 'Frontend', color: '#FF4154' },
+  { label: 'Styled Components', category: 'Frontend', color: '#DB7093' },
+  { label: 'Sass', category: 'Frontend', color: '#CC6699' },
+  { label: 'AngularJS', category: 'Frontend', color: '#DD0031' },
+  { label: 'Three.js', category: 'Frontend', color: '#049EF4' },
+  { label: 'React Native', category: 'Frontend', color: '#61DAFB' },
 
-export const ALL_SKILLS: SkillItem[] = Object.entries(RAW_SKILLS).flatMap(
-  ([category, names]) =>
-    names.map((name) => ({
-      name,
-      category: category as Exclude<SkillCategory, 'All'>,
-      color: CATEGORY_COLORS[category as Exclude<SkillCategory, 'All'>],
-    })),
-);
+  { label: 'Node.js', category: 'Backend', color: '#339933' },
+  { label: 'FastAPI', category: 'Backend', color: '#009688' },
+  { label: 'Flask', category: 'Backend', color: '#ffffff' },
+  { label: 'JWT', category: 'Backend', color: '#d63aff' },
+  { label: 'Firebase', category: 'Backend', color: '#FFCA28' },
+  { label: 'Supabase', category: 'Backend', color: '#3ECF8E' },
+  { label: 'WordPress', category: 'Backend', color: '#21759B' },
 
-export function getSkillsForCategory(category: SkillCategory): SkillItem[] {
+  { label: 'MongoDB', category: 'Database', color: '#47A248' },
+  { label: 'MySQL', category: 'Database', color: '#4479A1' },
+
+  { label: 'NumPy', category: 'AI / ML', color: '#4DABCF' },
+  { label: 'Pandas', category: 'AI / ML', color: '#150458' },
+  { label: 'Matplotlib', category: 'AI / ML', color: '#11557C' },
+  { label: 'PyTorch', category: 'AI / ML', color: '#EE4C2C' },
+  { label: 'TensorFlow', category: 'AI / ML', color: '#FF6F00' },
+  { label: 'Keras', category: 'AI / ML', color: '#D00000' },
+
+  { label: 'Docker', category: 'Cloud / DevOps', color: '#2496ED' },
+  { label: 'AWS', category: 'Cloud / DevOps', color: '#FF9900' },
+  { label: 'Render', category: 'Cloud / DevOps', color: '#46E3B7' },
+  { label: 'Vercel', category: 'Cloud / DevOps', color: '#ffffff' },
+
+  { label: 'Python', category: 'Languages', color: '#3776AB' },
+  { label: 'C', category: 'Languages', color: '#A8B9CC' },
+  { label: 'C++', category: 'Languages', color: '#00599C' },
+  { label: 'Java', category: 'Languages', color: '#ED8B00' },
+
+  { label: 'Git', category: 'Tools', color: '#F05032' },
+  { label: 'GitHub', category: 'Tools', color: '#ffffff' },
+  { label: 'Figma', category: 'Tools', color: '#F24E1E' },
+  { label: 'Canva', category: 'Tools', color: '#00C4CC' },
+  { label: 'Arduino', category: 'Tools', color: '#00979D' },
+  { label: 'Twilio', category: 'Tools', color: '#F22F46' },
+];
+
+export function skillsForCategory(category: SkillCategory): SkillItem[] {
   if (category === 'All') return ALL_SKILLS;
   return ALL_SKILLS.filter((s) => s.category === category);
-}
-
-export function skillsToBallpitProps(skills: SkillItem[]) {
-  const palette = skills.map((s) => {
-    const hex = s.color.replace('#', '');
-    return parseInt(hex, 16);
-  });
-  return {
-    count: Math.max(skills.length + 1, 8),
-    texts: skills.map((s) => s.name),
-    textColors: skills.map((s) => s.color),
-    colors: palette.length > 0 ? palette : [0x7928ca, 0x0070f3, 0x38bdf8],
-  };
 }

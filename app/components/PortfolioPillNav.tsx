@@ -103,7 +103,7 @@ export default function PortfolioPillNav() {
   return (
     <PillNav
       containerClassName={isNavVisible ? "" : "is-nav-hidden"}
-      logo="/assets/images/mypic.png"
+      logo="/assets/images/nish.png"
       logoAlt="Nishit Parikh Logo"
       items={items}
       activeHref={activeHref}

@@ -1,0 +1,131 @@
+.project-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.04) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.04) 100%
+  );
+  background-size: 400px 100%;
+  animation: projectShimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes projectShimmer {
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
+}
+
+.project-modal {
+  background: rgba(8, 8, 12, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow:
+    0 0 35px rgba(255, 255, 255, 0.15),
+    0 24px 80px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+}
+
+.project-modal::-webkit-scrollbar {
+  width: 6px;
+}
+.project-modal::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  margin: 12px 0;
+}
+.project-modal::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, rgba(202, 18, 168, 0.5), rgba(74, 222, 128, 0.5));
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.project-modal::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, rgba(202, 18, 168, 0.8), rgba(74, 222, 128, 0.8));
+}
+
+
+.project-glass-panel {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  backdrop-filter: blur(12px);
+}
+
+.project-tech-pill {
+  font-size: 0.875rem;
+  font-family: ui-monospace, monospace;
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+}
+
+.project-status {
+  font-size: 0.65rem;
+  font-family: ui-monospace, monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+}
+
+.project-status--completed {
+  color: #86efac;
+  background: rgba(74, 222, 128, 0.12);
+  border-color: rgba(74, 222, 128, 0.35);
+}
+
+.project-status--progress {
+  color: #fcd34d;
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+.project-status--experimental {
+  color: #c4b5fd;
+  background: rgba(168, 85, 247, 0.12);
+  border-color: rgba(168, 85, 247, 0.35);
+}
+
+.project-cta {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.65rem 1.5rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.project-cta:hover {
+  transform: translateY(-2px);
+}
+
+.project-cta--github {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.project-cta--github:hover {
+  box-shadow: 0 0 24px rgba(168, 85, 247, 0.25);
+  border-color: rgba(168, 85, 247, 0.45);
+}
+
+.project-cta--live {
+  color: #000;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  border: 1px solid rgba(251, 191, 36, 0.5);
+}
+
+.project-cta--live:hover {
+  box-shadow: 0 0 28px rgba(245, 158, 11, 0.35);
+}

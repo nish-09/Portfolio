@@ -4,12 +4,16 @@ import {
   useCallback,
   useEffect,
   useRef,
+  useState,
 } from 'react';
 import { gsap } from 'gsap';
 import CinematicLayer from './CinematicLayer';
 import { useSiteReady } from './SitePreloader';
 import { useLenis, scrollToSection } from './SmoothScroll';
 import styles from './VideoIntro.module.css';
+
+const DESKTOP_VIDEO_SRC = '/videos/talking-head.mp4';
+const MOBILE_VIDEO_SRC = '/assets/video/mobile.mp4';
 
 const IconChevronDown = () => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
@@ -23,6 +27,8 @@ export default function VideoIntro() {
   const mainRef = useRef<HTMLVideoElement>(null);
   const hasLeftHeroRef = useRef(false);
   const hasStartedRef = useRef(false);
+  const [videoSrc, setVideoSrc] = useState(DESKTOP_VIDEO_SRC);
+  const isMobileVideo = videoSrc === MOBILE_VIDEO_SRC;
 
   const siteReady = useSiteReady();
   const lenis = useLenis();
@@ -32,14 +38,14 @@ export default function VideoIntro() {
     const ambient = ambientRef.current;
     if (!main || !ambient) return;
 
-    main.muted = false;
-    main.volume = 1;
+    main.muted = isMobileVideo;
+    main.volume = isMobileVideo ? 0 : 1;
     main.currentTime = 0;
     ambient.currentTime = 0;
     void main.play().catch(() => undefined);
     void ambient.play().catch(() => undefined);
     hasStartedRef.current = true;
-  }, []);
+  }, [isMobileVideo]);
 
   useEffect(() => {
     const main = mainRef.current;
@@ -53,9 +59,37 @@ export default function VideoIntro() {
   }, []);
 
   useEffect(() => {
+    const mq = window.matchMedia(
+      '(max-width: 768px), (max-aspect-ratio: 9/16)',
+    );
+    const pickSrc = () => (mq.matches ? MOBILE_VIDEO_SRC : DESKTOP_VIDEO_SRC);
+    const apply = () => setVideoSrc(pickSrc());
+    apply();
+    mq.addEventListener('change', apply);
+    return () => mq.removeEventListener('change', apply);
+  }, []);
+
+  useEffect(() => {
+    const main = mainRef.current;
+    const ambient = ambientRef.current;
+    if (!main || !ambient) return;
+    main.src = videoSrc;
+    ambient.src = videoSrc;
+    main.load();
+    ambient.load();
+    hasStartedRef.current = false;
+  }, [videoSrc]);
+
+  const handleVideoError = useCallback(() => {
+    if (videoSrc !== DESKTOP_VIDEO_SRC) {
+      setVideoSrc(DESKTOP_VIDEO_SRC);
+    }
+  }, [videoSrc]);
+
+  useEffect(() => {
     if (!siteReady) return;
     startVideos();
-  }, [siteReady, startVideos]);
+  }, [siteReady, startVideos, videoSrc]);
 
   useEffect(() => {
     if (!siteReady || !sectionRef.current) return;
@@ -148,7 +182,7 @@ export default function VideoIntro() {
           if (hasLeftHeroRef.current && siteReady && hasStartedRef.current) {
             if (main) {
               main.currentTime = 0;
-              main.muted = false;
+              main.muted = isMobileVideo;
               void main.play().catch(() => undefined);
             }
             if (ambient) {
@@ -168,15 +202,16 @@ export default function VideoIntro() {
 
     observer.observe(section);
     return () => observer.disconnect();
-  }, [siteReady]);
+  }, [siteReady, isMobileVideo]);
 
   const handleVideoEnd = useCallback(() => {
+    if (isMobileVideo) return;
     mainRef.current?.pause();
     ambientRef.current?.pause();
     setTimeout(() => {
       scrollToSection(lenis, 'about', { duration: 2.2 });
     }, 600);
-  }, [lenis]);
+  }, [lenis, isMobileVideo]);
 
   const handleScroll = useCallback(() => {
     scrollToSection(lenis, 'about', { duration: 1.8 });
@@ -188,24 +223,29 @@ export default function VideoIntro() {
         <video
           ref={ambientRef}
           className={styles.ambientVideo}
-          src="/videos/talking-head.mp4"
+          src={videoSrc}
           muted
           playsInline
-          preload="auto"
+          loop={isMobileVideo}
+          preload={isMobileVideo ? 'metadata' : 'auto'}
           disablePictureInPicture
           tabIndex={-1}
+          onError={handleVideoError}
         />
 
         <video
           ref={mainRef}
           className={styles.mainVideo}
-          src="/videos/talking-head.mp4"
+          src={videoSrc}
+          muted={isMobileVideo}
           playsInline
-          preload="auto"
+          loop={isMobileVideo}
+          preload={isMobileVideo ? 'metadata' : 'auto'}
           disablePictureInPicture
           tabIndex={-1}
           aria-label="Introduction video"
           onEnded={handleVideoEnd}
+          onError={handleVideoError}
         />
       </div>
 

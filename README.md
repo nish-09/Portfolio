@@ -1,32 +1,66 @@
-# Nishit Parikh — Portfolio
+# Nishit Parikh — Creative Developer Portfolio 🚀
 
-Personal portfolio site built with [Next.js](https://nextjs.org). This repository is **private** and **not open source**: the code is not licensed for reuse, redistribution, or contribution.
+Welcome to the source code of my personal portfolio! This project is a showcase of my skills as a creative developer, combining cutting-edge web technologies to create an immersive, interactive, and high-performance user experience.
 
-## Local development
+> **Note:** This repository is **private** and **not open source**. The code, design, and assets are not licensed for reuse, redistribution, or contribution.
 
+## ✨ Features
+
+- **Immersive 3D Galaxy:** A dynamic, physics-based WebGL galaxy background built with **Three.js** that reacts to cursor movements.
+- **Cinematic Animations:** Smooth, buttery page transitions and scroll-triggered animations powered by **Framer Motion** and **GSAP**.
+- **Interactive Physics Engine:** A custom 2D physics engine using **Matter.js** for the skills section ball pit.
+- **Premium UI/UX:** Sleek glassmorphism interfaces, glowing neon accents, custom cursor tracking, and seamless modal transitions.
+- **AI Assistant Integration:** An optional integrated "Astra" chat assistant powered by the Groq API.
+- **Fully Responsive:** Carefully crafted to look stunning on mobile, tablet, and desktop devices.
+
+## 🛠️ Tech Stack
+
+- **Framework:** [Next.js 14](https://nextjs.org) (App Router)
+- **Styling:** Tailwind CSS & Vanilla CSS for complex animations
+- **3D & Canvas:** Three.js, React Three Fiber, native HTML5 Canvas
+- **Animations:** Framer Motion, GSAP, Lenis (Smooth Scrolling)
+- **Physics:** Matter.js
+- **Language:** TypeScript
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+Ensure you have [Node.js](https://nodejs.org/) (v18+) installed.
+
+### Installation
+
+1. Clone the repository and install dependencies:
 ```bash
 npm install
-npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+2. Set up environment variables for the AI assistant:
+   - Copy `.env.example` to `.env.local`.
+   - Add your [Groq API Key](https://console.groq.com/): `GROQ_API_KEY=your_key_here`.
 
-## Environment variables
+### Local Development
 
-The optional **Astra** chat assistant calls Groq from a server route. Do **not** commit secrets.
+Start the development server:
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) to view the site.
 
-1. Copy `.env.example` to `.env.local`.
-2. Set `GROQ_API_KEY` to your [Groq](https://console.groq.com/) API key.
+## 📦 Build & Deploy
 
-Files matching `.env` and `.env.*` (except `.env.example`) are ignored by Git—see `.gitignore`.
-
-## Build
-
+To create an optimized production build:
 ```bash
 npm run build
 npm start
 ```
 
-## Deploy
+### Deployment (Vercel)
 
-Compatible with [Vercel](https://vercel.com) or any Node host. Add `GROQ_API_KEY` in the host’s environment settings if you use the assistant.
+This project is highly optimized for deployment on [Vercel](https://vercel.com).
+1. Connect your repository to Vercel.
+2. Add the `GROQ_API_KEY` to your Vercel Environment Variables.
+3. Deploy!
+
+---
+*Crafted with ❤️ by Nishit Parikh.*
