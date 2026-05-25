@@ -48,7 +48,7 @@ export default function SkillsSection() {
       </div>
 
       <div className="relative z-20 w-full max-w-7xl mx-auto mb-6 sm:mb-8 px-4 sm:px-6">
-        <div className="flex gap-4 sm:gap-6 overflow-x-auto pb-4 pt-2 scrollbar-none snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden px-2">
+        <div className="flex flex-wrap justify-center gap-3 sm:gap-4 pb-4 pt-2 px-2">
           {SKILL_CATEGORIES.map((cat) => {
             const active = category === cat;
             return (
@@ -56,7 +56,7 @@ export default function SkillsSection() {
                 key={cat}
                 type="button"
                 onClick={() => setCategory(cat)}
-                className={`snap-start shrink-0 px-6 sm:px-8 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-mono uppercase tracking-wider border transition-all duration-300 ${
+                className={`px-5 sm:px-8 py-2 sm:py-2.5 rounded-full text-[11px] sm:text-sm font-mono uppercase tracking-wider border transition-all duration-300 ${
                   active
                     ? 'bg-white/12 border-amber-400/50 text-white shadow-[0_0_20px_rgba(245,158,11,0.25)] scale-105'
                     : 'bg-white/[0.04] border-white/10 text-white/50 hover:border-white/25 hover:text-white/80'

@@ -38,8 +38,8 @@ export default function VideoIntro() {
     const ambient = ambientRef.current;
     if (!main || !ambient) return;
 
-    main.muted = isMobileVideo;
-    main.volume = isMobileVideo ? 0 : 1;
+    main.muted = false;
+    main.volume = 1;
     main.currentTime = 0;
     ambient.currentTime = 0;
     void main.play().catch(() => undefined);
@@ -182,7 +182,7 @@ export default function VideoIntro() {
           if (hasLeftHeroRef.current && siteReady && hasStartedRef.current) {
             if (main) {
               main.currentTime = 0;
-              main.muted = isMobileVideo;
+              main.muted = false;
               void main.play().catch(() => undefined);
             }
             if (ambient) {
@@ -237,7 +237,7 @@ export default function VideoIntro() {
           ref={mainRef}
           className={styles.mainVideo}
           src={videoSrc}
-          muted={isMobileVideo}
+          muted={false}
           playsInline
           loop={isMobileVideo}
           preload={isMobileVideo ? 'metadata' : 'auto'}
